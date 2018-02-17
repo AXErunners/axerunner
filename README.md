@@ -1,4 +1,4 @@
-# dashman
+# AXErunner
 
 DASH wallet/daemon management utilities - version 0.1.26
 
@@ -11,7 +11,7 @@ DASH wallet/daemon management utilities - version 0.1.26
 To install dashman do:
 
     sudo apt-get install python git unzip pv
-    cd ~ && git clone https://github.com/moocowmoo/dashman
+    cd ~ && git clone https://github.com/AXErunners/axerunner
 
 To update your existing version 12 32/64bit linux dash wallet to the latest
 dashd, do:
@@ -88,28 +88,4 @@ given the optional 'now' argument.
 * unzip
 * dashd, dash-cli - version 12 or greater to update
 
-# Screencaps
-
-### install
-
-<img src="https://raw.githubusercontent.com/moocowmoo/dashman/master/screencaps/dashman_0.1-install.png">
-
-### update
-
-<img src="https://raw.githubusercontent.com/moocowmoo/dashman/master/screencaps/dashman_0.1-update.png">
-
-### reinstall
-
-<img src="https://raw.githubusercontent.com/moocowmoo/dashman/master/screencaps/dashman_0.1-reinstall.png">
-
-### restart
-
-<img src="https://raw.githubusercontent.com/moocowmoo/dashman/master/screencaps/dashman_0.1-restart.png">
-
-### status
-
-<img src="https://raw.githubusercontent.com/moocowmoo/dashman/master/screencaps/dashman_0.1-status.png">
-
-# Contact
-
-Email me at moocowmoo@masternode.me or submit a pull request.
+Based on Dashman https://github.com/moocowmoo/dashman
