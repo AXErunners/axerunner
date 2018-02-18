@@ -84,4 +84,4 @@ given the optional 'now' argument.
 * unzip
 * axed, axe-cli
 
-Based on Axeman https://github.com/moocowmoo/axerunner
+Based on Dashman https://github.com/moocowmoo/dashman
