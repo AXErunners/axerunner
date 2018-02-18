@@ -4,7 +4,7 @@ import binascii
 MAINNET = dict(
     MAGIC_HEADER=binascii.unhexlify('F9BEB4D9'),
     DNS_BOOTSTRAP=[
-        "seed.bitcoin.sipa.be", "dnsseed.bitcoin.dashjr.org"
+        "seed.bitcoin.sipa.be", "dnsseed.bitcoin.axejr.org"
         "bitseed.xf2.org", "dnsseed.bluematt.me",
     ]
 )

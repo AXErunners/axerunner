@@ -1,6 +1,6 @@
 # vim: set filetype=sh ts=4 sw=4 et
 
-# dashman_functions.sh - common functions and variables
+# axerunner_functions.sh - common functions and variables
 
 # Copyright (c) 2015-2017 moocowmoo - moocowmoo@masternode.me
 
@@ -13,20 +13,20 @@ C_PURPLE="\e[35m"
 C_CYAN="\e[36m"
 C_NORM="\e[0m"
 
-DASH_ORG='https://www.dash.org'
-DOWNLOAD_PAGE='https://www.dash.org/downloads/'
-CHECKSUM_URL='https://www.dash.org/binaries/SHA256SUMS.asc'
-DASHD_RUNNING=0
-DASHD_RESPONDING=0
-DASHMAN_VERSION=$(cat $DASHMAN_GITDIR/VERSION)
-DASHMAN_CHECKOUT=$(GIT_DIR=$DASHMAN_GITDIR/.git GIT_WORK_TREE=$DASHMAN_GITDIR git describe --dirty | sed -e "s/^.*-\([0-9]\+-g\)/\1/" )
-if [ "$DASHMAN_CHECKOUT" == "v"$DASHMAN_VERSION ]; then
-    DASHMAN_CHECKOUT=""
+AXE_ORG='https://www.axe.org'
+DOWNLOAD_PAGE='https://www.axe.org/downloads/'
+CHECKSUM_URL='https://www.axe.org/binaries/SHA256SUMS.asc'
+AXED_RUNNING=0
+AXED_RESPONDING=0
+AXERUNNER_VERSION=$(cat $AXERUNNER_GITDIR/VERSION)
+AXERUNNER_CHECKOUT=$(GIT_DIR=$AXERUNNER_GITDIR/.git GIT_WORK_TREE=$AXERUNNER_GITDIR git describe --dirty | sed -e "s/^.*-\([0-9]\+-g\)/\1/" )
+if [ "$AXERUNNER_CHECKOUT" == "v"$AXERUNNER_VERSION ]; then
+    AXERUNNER_CHECKOUT=""
 else
-    DASHMAN_CHECKOUT=" ("$DASHMAN_CHECKOUT")"
+    AXERUNNER_CHECKOUT=" ("$AXERUNNER_CHECKOUT")"
 fi
 
-curl_cmd="timeout 7 curl -s -L -A axerunner/$DASHMAN_VERSION"
+curl_cmd="timeout 7 curl -s -L -A axerunner/$AXERUNNER_VERSION"
 wget_cmd='wget --no-check-certificate -q'
 
 
@@ -154,7 +154,7 @@ _check_dependencies() {
     (which perl 2>&1) >/dev/null || MISSING_DEPENDENCIES="${MISSING_DEPENDENCIES}perl "
     (which git  2>&1) >/dev/null || MISSING_DEPENDENCIES="${MISSING_DEPENDENCIES}git "
 
-    MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $HOME/.dash{,core}/dash.conf | wc -l 2>/dev/null)
+    MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $HOME/.axe{,core}/axe.conf | wc -l 2>/dev/null)
     if [ $MN_CONF_ENABLED -gt 0 ] ; then
         (which unzip 2>&1) >/dev/null || MISSING_DEPENDENCIES="${MISSING_DEPENDENCIES}unzip "
         (which virtualenv 2>&1) >/dev/null || MISSING_DEPENDENCIES="${MISSING_DEPENDENCIES}python-virtualenv "
@@ -189,17 +189,17 @@ _check_dependencies() {
 
 }
 
-# attempt to locate dash-cli executable.
-# search current dir, ~/.dash, `which dash-cli` ($PATH), finally recursive
-_find_dash_directory() {
+# attempt to locate axe-cli executable.
+# search current dir, ~/.axe, `which axe-cli` ($PATH), finally recursive
+_find_axe_directory() {
 
     INSTALL_DIR=''
 
-    # dash-cli in PATH
+    # axe-cli in PATH
 
-    if [ ! -z $(which dash-cli 2>/dev/null) ] ; then
-        INSTALL_DIR=$(readlink -f `which dash-cli`)
-        INSTALL_DIR=${INSTALL_DIR%%/dash-cli*};
+    if [ ! -z $(which axe-cli 2>/dev/null) ] ; then
+        INSTALL_DIR=$(readlink -f `which axe-cli`)
+        INSTALL_DIR=${INSTALL_DIR%%/axe-cli*};
 
 
         #TODO prompt for single-user or multi-user install
@@ -211,66 +211,66 @@ _find_dash_directory() {
 
             # if not run as root
             if [ $EUID -ne 0 ] ; then
-                die "\n${messages["exec_found_in_system_dir"]} $INSTALL_DIR${messages["run_dashman_as_root"]} ${messages["exiting"]}"
+                die "\n${messages["exec_found_in_system_dir"]} $INSTALL_DIR${messages["run_axerunner_as_root"]} ${messages["exiting"]}"
             fi
         fi
 
-    # dash-cli not in PATH
+    # axe-cli not in PATH
 
         # check current directory
-    elif [ -e ./dash-cli ] ; then
+    elif [ -e ./axe-cli ] ; then
         INSTALL_DIR='.' ;
 
-        # check ~/.dash directory
-    elif [ -e $HOME/.dash/dash-cli ] ; then
-        INSTALL_DIR="$HOME/.dash" ;
+        # check ~/.axe directory
+    elif [ -e $HOME/.axe/axe-cli ] ; then
+        INSTALL_DIR="$HOME/.axe" ;
 
-    elif [ -e $HOME/.dashcore/dash-cli ] ; then
-        INSTALL_DIR="$HOME/.dashcore" ;
+    elif [ -e $HOME/.axecore/axe-cli ] ; then
+        INSTALL_DIR="$HOME/.axecore" ;
 
-        # TODO try to find dash-cli with find
+        # TODO try to find axe-cli with find
 #    else
-#        CANDIDATES=`find $HOME -name dash-cli`
+#        CANDIDATES=`find $HOME -name axe-cli`
     fi
 
     if [ ! -z "$INSTALL_DIR" ]; then
         INSTALL_DIR=$(readlink -f $INSTALL_DIR) 2>/dev/null
         if [ ! -e $INSTALL_DIR ]; then
-            echo -e "${C_RED}${messages["dashcli_not_found_in_cwd"]}, ~/.dashcore, or \$PATH. -- ${messages["exiting"]}$C_NORM"
+            echo -e "${C_RED}${messages["axecli_not_found_in_cwd"]}, ~/.axecore, or \$PATH. -- ${messages["exiting"]}$C_NORM"
             exit 1
         fi
     else
-        echo -e "${C_RED}${messages["dashcli_not_found_in_cwd"]}, ~/.dashcore, or \$PATH. -- ${messages["exiting"]}$C_NORM"
+        echo -e "${C_RED}${messages["axecli_not_found_in_cwd"]}, ~/.axecore, or \$PATH. -- ${messages["exiting"]}$C_NORM"
         exit 1
     fi
 
-    DASH_CLI="$INSTALL_DIR/dash-cli"
+    AXE_CLI="$INSTALL_DIR/axe-cli"
 
-    # check INSTALL_DIR has dashd and dash-cli
-    if [ ! -e $INSTALL_DIR/dashd ]; then
-        echo -e "${C_RED}${messages["dashd_not_found"]} $INSTALL_DIR -- ${messages["exiting"]}$C_NORM"
+    # check INSTALL_DIR has axed and axe-cli
+    if [ ! -e $INSTALL_DIR/axed ]; then
+        echo -e "${C_RED}${messages["axed_not_found"]} $INSTALL_DIR -- ${messages["exiting"]}$C_NORM"
         exit 1
     fi
 
-    if [ ! -e $DASH_CLI ]; then
-        echo -e "${C_RED}${messages["dashcli_not_found"]} $INSTALL_DIR -- ${messages["exiting"]}$C_NORM"
+    if [ ! -e $AXE_CLI ]; then
+        echo -e "${C_RED}${messages["axecli_not_found"]} $INSTALL_DIR -- ${messages["exiting"]}$C_NORM"
         exit 1
     fi
 
 }
 
 
-_check_dashman_updates() {
-    GITHUB_DASHMAN_VERSION=$( $curl_cmd https://raw.githubusercontent.com/moocowmoo/axerunner/master/VERSION )
-    if [ ! -z "$GITHUB_DASHMAN_VERSION" ] && [ "$DASHMAN_VERSION" != "$GITHUB_DASHMAN_VERSION" ]; then
+_check_axerunner_updates() {
+    GITHUB_AXERUNNER_VERSION=$( $curl_cmd https://raw.githubusercontent.com/moocowmoo/axerunner/master/VERSION )
+    if [ ! -z "$GITHUB_AXERUNNER_VERSION" ] && [ "$AXERUNNER_VERSION" != "$GITHUB_AXERUNNER_VERSION" ]; then
         echo -e "\n"
-        echo -e "${C_RED}${0##*/} ${messages["requires_updating"]} $C_GREEN$GITHUB_DASHMAN_VERSION$C_RED\n${messages["requires_sync"]}$C_NORM\n"
+        echo -e "${C_RED}${0##*/} ${messages["requires_updating"]} $C_GREEN$GITHUB_AXERUNNER_VERSION$C_RED\n${messages["requires_sync"]}$C_NORM\n"
 
         pending "${messages["sync_to_github"]} "
 
         if confirm " [${C_GREEN}y${C_NORM}/${C_RED}N${C_NORM}] $C_CYAN"; then
-            echo $DASHMAN_VERSION > $DASHMAN_GITDIR/PREVIOUS_VERSION
-            exec $DASHMAN_GITDIR/${0##*/} sync $COMMAND
+            echo $AXERUNNER_VERSION > $AXERUNNER_GITDIR/PREVIOUS_VERSION
+            exec $AXERUNNER_GITDIR/${0##*/} sync $COMMAND
         fi
         die "${messages["exiting"]}"
     fi
@@ -292,7 +292,7 @@ _get_platform_info() {
             ;;
         *)
             err "${messages["err_unknown_platform"]} $PLATFORM"
-            err "${messages["err_dashman_supports"]}"
+            err "${messages["err_axerunner_supports"]}"
             die "${messages["exiting"]}"
             ;;
     esac
@@ -314,26 +314,26 @@ _get_versions() {
     read -a DOWNLOAD_URLS <<< $( echo $DOWNLOAD_HTML | sed -e 's/ /\n/g' | grep -v '.asc' | grep $DOWNLOAD_FOR | tr "\n" " ")
 
     #$(( <-- vim syntax highlighting fix
-    LATEST_VERSION=$( echo ${DOWNLOAD_URLS[0]} | perl -ne '/dashcore-([0-9.]+)-/; print $1;' 2>/dev/null )
+    LATEST_VERSION=$( echo ${DOWNLOAD_URLS[0]} | perl -ne '/axecore-([0-9.]+)-/; print $1;' 2>/dev/null )
     if [ -z "$LATEST_VERSION" ]; then
         die "\n${messages["err_could_not_get_version"]} $DOWNLOAD_PAGE -- ${messages["exiting"]}"
     fi
 
-    if [ -z "$DASH_CLI" ]; then DASH_CLI='echo'; fi
-    CURRENT_VERSION=$( $DASH_CLI --version | perl -ne '/v([0-9.]+)/; print $1;' 2>/dev/null ) 2>/dev/null
+    if [ -z "$AXE_CLI" ]; then AXE_CLI='echo'; fi
+    CURRENT_VERSION=$( $AXE_CLI --version | perl -ne '/v([0-9.]+)/; print $1;' 2>/dev/null ) 2>/dev/null
     for url in "${DOWNLOAD_URLS[@]}"
     do
         if [ $DOWNLOAD_FOR == 'linux' ] ; then
             if [[ $url =~ .*linux${BITS}.* ]] ; then
                 if [[ ! $url =~ "http" ]] ; then
-                    url=$DASH_ORG"/binaries/"$url
+                    url=$AXE_ORG"/binaries/"$url
                 fi
                 DOWNLOAD_URL=$url
                 DOWNLOAD_FILE=${DOWNLOAD_URL##*/}
             fi
         elif [ $DOWNLOAD_FOR == 'RPi2' ] ; then
             if [[ ! $url =~ "http" ]] ; then
-                url=$DASH_ORG"/binaries/"$url
+                url=$AXE_ORG"/binaries/"$url
             fi
             DOWNLOAD_URL=$url
             DOWNLOAD_FILE=${DOWNLOAD_URL##*/}
@@ -342,27 +342,27 @@ _get_versions() {
 }
 
 
-_check_dashd_state() {
-    _get_dashd_proc_status
-    DASHD_RUNNING=0
-    DASHD_RESPONDING=0
-    if [ $DASHD_HASPID -gt 0 ] && [ $DASHD_PID -gt 0 ]; then
-        DASHD_RUNNING=1
+_check_axed_state() {
+    _get_axed_proc_status
+    AXED_RUNNING=0
+    AXED_RESPONDING=0
+    if [ $AXED_HASPID -gt 0 ] && [ $AXED_PID -gt 0 ]; then
+        AXED_RUNNING=1
     fi
-    if [ $( $DASH_CLI help 2>/dev/null | wc -l ) -gt 0 ]; then
-        DASHD_RESPONDING=1
+    if [ $( $AXE_CLI help 2>/dev/null | wc -l ) -gt 0 ]; then
+        AXED_RESPONDING=1
     fi
 }
 
-restart_dashd(){
+restart_axed(){
 
-    if [ $DASHD_RUNNING == 1 ]; then
-        pending " --> ${messages["stopping"]} dashd. ${messages["please_wait"]}"
-        $DASH_CLI stop 2>&1 >/dev/null
+    if [ $AXED_RUNNING == 1 ]; then
+        pending " --> ${messages["stopping"]} axed. ${messages["please_wait"]}"
+        $AXE_CLI stop 2>&1 >/dev/null
         sleep 10
-        killall -9 dashd dash-shutoff 2>/dev/null
+        killall -9 axed axe-shutoff 2>/dev/null
         ok "${messages["done"]}"
-        DASHD_RUNNING=0
+        AXED_RUNNING=0
     fi
 
     pending " --> ${messages["deleting_cache_files"]}"
@@ -372,45 +372,45 @@ restart_dashd(){
     rm -f banlist.dat governance.dat netfulfilled.dat budget.dat debug.log fee_estimates.dat mncache.dat mnpayments.dat peers.dat
     ok "${messages["done"]}"
 
-    pending " --> ${messages["starting_dashd"]}"
-    $INSTALL_DIR/dashd 2>&1 >/dev/null
-    DASHD_RUNNING=1
+    pending " --> ${messages["starting_axed"]}"
+    $INSTALL_DIR/axed 2>&1 >/dev/null
+    AXED_RUNNING=1
     ok "${messages["done"]}"
 
-    pending " --> ${messages["waiting_for_dashd_to_respond"]}"
+    pending " --> ${messages["waiting_for_axed_to_respond"]}"
     echo -en "${C_YELLOW}"
-    while [ $DASHD_RUNNING == 1 ] && [ $DASHD_RESPONDING == 0 ]; do
+    while [ $AXED_RUNNING == 1 ] && [ $AXED_RESPONDING == 0 ]; do
         echo -n "."
-        _check_dashd_state
+        _check_axed_state
         sleep 2
     done
-    if [ $DASHD_RUNNING == 0 ]; then
-        die "\n - dashd unexpectedly quit. ${messages["exiting"]}"
+    if [ $AXED_RUNNING == 0 ]; then
+        die "\n - axed unexpectedly quit. ${messages["exiting"]}"
     fi
     ok "${messages["done"]}"
-    pending " --> dash-cli getinfo"
+    pending " --> axe-cli getinfo"
     echo
-    $DASH_CLI getinfo
+    $AXE_CLI getinfo
     echo
 
 }
 
 
-update_dashd(){
+update_axed(){
 
     if [ $LATEST_VERSION != $CURRENT_VERSION ] || [ ! -z "$REINSTALL" ] ; then
                     
 
         if [ ! -z "$REINSTALL" ];then
             echo -e ""
-            echo -e "$C_GREEN*** ${messages["dash_version"]} $CURRENT_VERSION is up-to-date. ***$C_NORM"
+            echo -e "$C_GREEN*** ${messages["axe_version"]} $CURRENT_VERSION is up-to-date. ***$C_NORM"
             echo -e ""
             echo -en
 
             pending "${messages["reinstall_to"]} $INSTALL_DIR$C_NORM?"
         else
             echo -e ""
-            echo -e "$C_RED*** ${messages["newer_dash_available"]} ***$C_NORM"
+            echo -e "$C_RED*** ${messages["newer_axe_available"]} ***$C_NORM"
             echo -e ""
             echo -e "${messages["currnt_version"]} $C_RED$CURRENT_VERSION$C_NORM"
             echo -e "${messages["latest_version"]} $C_GREEN$LATEST_VERSION$C_NORM"
@@ -439,7 +439,7 @@ update_dashd(){
 
         pending " --> ${messages["downloading"]} ${DOWNLOAD_URL}... "
         wget --no-check-certificate -q -r $DOWNLOAD_URL -O $DOWNLOAD_FILE
-        wget --no-check-certificate -q -r https://github.com/dashpay/dash/releases/download/v$LATEST_VERSION/SHA256SUMS.asc -O ${DOWNLOAD_FILE}.DIGESTS.txt
+        wget --no-check-certificate -q -r https://github.com/axepay/axe/releases/download/v$LATEST_VERSION/SHA256SUMS.asc -O ${DOWNLOAD_FILE}.DIGESTS.txt
         if [ ! -e $DOWNLOAD_FILE ] ; then
             echo -e "${C_RED}${messages["err_downloading_file"]}"
             echo -e "${messages["err_tried_to_get"]} $DOWNLOAD_URL$C_NORM"
@@ -468,11 +468,11 @@ update_dashd(){
 
         # pummel it --------------------------------------------------------------
 
-        if [ $DASHD_RUNNING == 1 ]; then
-            pending " --> ${messages["stopping"]} dashd. ${messages["please_wait"]}"
-            $DASH_CLI stop >/dev/null 2>&1
+        if [ $AXED_RUNNING == 1 ]; then
+            pending " --> ${messages["stopping"]} axed. ${messages["please_wait"]}"
+            $AXE_CLI stop >/dev/null 2>&1
             sleep 15
-            killall -9 dashd dash-shutoff >/dev/null 2>&1
+            killall -9 axed axe-shutoff >/dev/null 2>&1
             ok "${messages["done"]}"
         fi
 
@@ -489,65 +489,65 @@ update_dashd(){
             mnpayments.dat \
             netfulfilled.dat \
             peers.dat \
-            dashd \
-            dashd-$CURRENT_VERSION \
-            dash-qt \
-            dash-qt-$CURRENT_VERSION \
-            dash-cli \
-            dash-cli-$CURRENT_VERSION \
-            dashcore-${CURRENT_VERSION}.gz*
+            axed \
+            axed-$CURRENT_VERSION \
+            axe-qt \
+            axe-qt-$CURRENT_VERSION \
+            axe-cli \
+            axe-cli-$CURRENT_VERSION \
+            axecore-${CURRENT_VERSION}.gz*
         ok "${messages["done"]}"
 
         # place it ---------------------------------------------------------------
 
-        mv dashcore-0.12.2/bin/dashd dashd-$LATEST_VERSION
-        mv dashcore-0.12.2/bin/dash-cli dash-cli-$LATEST_VERSION
+        mv axecore-0.12.2/bin/axed axed-$LATEST_VERSION
+        mv axecore-0.12.2/bin/axe-cli axe-cli-$LATEST_VERSION
         if [ $PLATFORM != 'armv7l' ];then
-            mv dashcore-0.12.2/bin/dash-qt dash-qt-$LATEST_VERSION
+            mv axecore-0.12.2/bin/axe-qt axe-qt-$LATEST_VERSION
         fi
-        ln -s dashd-$LATEST_VERSION dashd
-        ln -s dash-cli-$LATEST_VERSION dash-cli
+        ln -s axed-$LATEST_VERSION axed
+        ln -s axe-cli-$LATEST_VERSION axe-cli
         if [ $PLATFORM != 'armv7l' ];then
-            ln -s dash-qt-$LATEST_VERSION dash-qt
+            ln -s axe-qt-$LATEST_VERSION axe-qt
         fi
 
         # permission it ----------------------------------------------------------
 
         if [ ! -z "$SUDO_USER" ]; then
-            chown -h $SUDO_USER:$SUDO_USER {$DOWNLOAD_FILE,${DOWNLOAD_FILE}.DIGESTS.txt,dash-cli,dashd,dash-qt,dash*$LATEST_VERSION}
+            chown -h $SUDO_USER:$SUDO_USER {$DOWNLOAD_FILE,${DOWNLOAD_FILE}.DIGESTS.txt,axe-cli,axed,axe-qt,axe*$LATEST_VERSION}
         fi
 
         # purge it ---------------------------------------------------------------
 
-        rm -rf dash-0.12.0
-        rm -rf dashcore-0.12.1*
-        rm -rf dashcore-0.12.2
+        rm -rf axe-0.12.0
+        rm -rf axecore-0.12.1*
+        rm -rf axecore-0.12.2
 
         # punch it ---------------------------------------------------------------
 
-        pending " --> ${messages["launching"]} dashd... "
-        touch $INSTALL_DIR/dashd.pid
-        $INSTALL_DIR/dashd > /dev/null
+        pending " --> ${messages["launching"]} axed... "
+        touch $INSTALL_DIR/axed.pid
+        $INSTALL_DIR/axed > /dev/null
         ok "${messages["done"]}"
 
         # probe it ---------------------------------------------------------------
 
-        pending " --> ${messages["waiting_for_dashd_to_respond"]}"
+        pending " --> ${messages["waiting_for_axed_to_respond"]}"
         echo -en "${C_YELLOW}"
-        DASHD_RUNNING=1
-        while [ $DASHD_RUNNING == 1 ] && [ $DASHD_RESPONDING == 0 ]; do
+        AXED_RUNNING=1
+        while [ $AXED_RUNNING == 1 ] && [ $AXED_RESPONDING == 0 ]; do
             echo -n "."
-            _check_dashd_state
+            _check_axed_state
             sleep 1
         done
-        if [ $DASHD_RUNNING == 0 ]; then
-            die "\n - dashd unexpectedly quit. ${messages["exiting"]}"
+        if [ $AXED_RUNNING == 0 ]; then
+            die "\n - axed unexpectedly quit. ${messages["exiting"]}"
         fi
         ok "${messages["done"]}"
 
         # poll it ----------------------------------------------------------------
 
-        MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $INSTALL_DIR/dash.conf | wc -l 2>/dev/null)
+        MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $INSTALL_DIR/axe.conf | wc -l 2>/dev/null)
         if [ $MN_CONF_ENABLED -gt 0 ] ; then
 
             # populate it --------------------------------------------------------
@@ -581,26 +581,26 @@ update_dashd(){
             echo -e ""
             echo -e "${C_GREEN}${messages["installed_in"]} ${INSTALL_DIR}$C_NORM"
             echo -e ""
-            ls -l --color {$DOWNLOAD_FILE,${DOWNLOAD_FILE}.DIGESTS.txt,dash-cli,dashd,dash-qt,dash*$LATEST_VERSION}
+            ls -l --color {$DOWNLOAD_FILE,${DOWNLOAD_FILE}.DIGESTS.txt,axe-cli,axed,axe-qt,axe*$LATEST_VERSION}
             echo -e ""
 
             quit
         else
-            echo -e "${C_RED}${messages["dash_version"]} $CURRENT_VERSION ${messages["is_not_uptodate"]} ($LATEST_VERSION) ${messages["exiting"]}$C_NORM"
+            echo -e "${C_RED}${messages["axe_version"]} $CURRENT_VERSION ${messages["is_not_uptodate"]} ($LATEST_VERSION) ${messages["exiting"]}$C_NORM"
         fi
 
     else
         echo -e ""
-        echo -e "${C_GREEN}${messages["dash_version"]} $CURRENT_VERSION ${messages["is_uptodate"]} ${messages["exiting"]}$C_NORM"
+        echo -e "${C_GREEN}${messages["axe_version"]} $CURRENT_VERSION ${messages["is_uptodate"]} ${messages["exiting"]}$C_NORM"
     fi
 
     exit 0
 }
 
-install_dashd(){
+install_axed(){
 
-    INSTALL_DIR=$HOME/.dashcore
-    DASH_CLI="$INSTALL_DIR/dash-cli"
+    INSTALL_DIR=$HOME/.axecore
+    AXE_CLI="$INSTALL_DIR/axe-cli"
 
     if [ -e $INSTALL_DIR ] ; then
         die "\n - ${messages["preexisting_dir"]} $INSTALL_DIR ${messages["found"]} ${messages["run_reinstall"]} ${messages["exiting"]}"
@@ -636,8 +636,8 @@ install_dashd(){
 
     mkdir -p $INSTALL_DIR
 
-    if [ ! -e $INSTALL_DIR/dash.conf ] ; then
-        pending " --> ${messages["creating"]} dash.conf... "
+    if [ ! -e $INSTALL_DIR/axe.conf ] ; then
+        pending " --> ${messages["creating"]} axe.conf... "
 
         IPADDR=$PUBLIC_IPV4
 #        if [ ! -z "$USE_IPV6" ]; then
@@ -647,7 +647,7 @@ install_dashd(){
         RPCPASS=`echo $(dd if=/dev/urandom bs=128 count=1 2>/dev/null) | sha256sum | awk '{print $1}'`
         while read; do
             eval echo "$REPLY"
-        done < $DASHMAN_GITDIR/.dash.conf.template > $INSTALL_DIR/dash.conf
+        done < $AXERUNNER_GITDIR/.axe.conf.template > $INSTALL_DIR/axe.conf
         ok "${messages["done"]}"
     fi
 
@@ -661,7 +661,7 @@ install_dashd(){
     tput sc
     echo -e "$C_CYAN"
     $wget_cmd -O - $DOWNLOAD_URL | pv -trep -s27M -w80 -N wallet > $DOWNLOAD_FILE
-    $wget_cmd -O - https://github.com/dashpay/dash/releases/download/v$LATEST_VERSION/SHA256SUMS.asc | pv -trep -w80 -N checksums > ${DOWNLOAD_FILE}.DIGESTS.txt
+    $wget_cmd -O - https://github.com/axepay/axe/releases/download/v$LATEST_VERSION/SHA256SUMS.asc | pv -trep -w80 -N checksums > ${DOWNLOAD_FILE}.DIGESTS.txt
     echo -ne "$C_NORM"
     clear_n_lines 2
     tput rc
@@ -700,11 +700,11 @@ install_dashd(){
 
     # pummel it --------------------------------------------------------------
 
-#    if [ $DASHD_RUNNING == 1 ]; then
-#        pending " --> ${messages["stopping"]} dashd. ${messages["please_wait"]}"
-#        $DASH_CLI stop >/dev/null 2>&1
+#    if [ $AXED_RUNNING == 1 ]; then
+#        pending " --> ${messages["stopping"]} axed. ${messages["please_wait"]}"
+#        $AXE_CLI stop >/dev/null 2>&1
 #        sleep 15
-#        killall -9 dashd dash-shutoff >/dev/null 2>&1
+#        killall -9 axed axe-shutoff >/dev/null 2>&1
 #        ok "${messages["done"]}"
 #    fi
 
@@ -721,42 +721,42 @@ install_dashd(){
 #        mnpayments.dat \
 #        netfulfilled.dat \
 #        peers.dat \
-#        dashd \
-#        dashd-$CURRENT_VERSION \
-#        dash-qt \
-#        dash-qt-$CURRENT_VERSION \
-#        dash-cli \
-#        dash-cli-$CURRENT_VERSION
+#        axed \
+#        axed-$CURRENT_VERSION \
+#        axe-qt \
+#        axe-qt-$CURRENT_VERSION \
+#        axe-cli \
+#        axe-cli-$CURRENT_VERSION
 #    ok "${messages["done"]}"
 
     # place it ---------------------------------------------------------------
 
-    mv dashcore-0.12.2/bin/dashd dashd-$LATEST_VERSION
-    mv dashcore-0.12.2/bin/dash-cli dash-cli-$LATEST_VERSION
+    mv axecore-0.12.2/bin/axed axed-$LATEST_VERSION
+    mv axecore-0.12.2/bin/axe-cli axe-cli-$LATEST_VERSION
     if [ $PLATFORM != 'armv7l' ];then
-        mv dashcore-0.12.2/bin/dash-qt dash-qt-$LATEST_VERSION
+        mv axecore-0.12.2/bin/axe-qt axe-qt-$LATEST_VERSION
     fi
-    ln -s dashd-$LATEST_VERSION dashd
-    ln -s dash-cli-$LATEST_VERSION dash-cli
+    ln -s axed-$LATEST_VERSION axed
+    ln -s axe-cli-$LATEST_VERSION axe-cli
     if [ $PLATFORM != 'armv7l' ];then
-        ln -s dash-qt-$LATEST_VERSION dash-qt
+        ln -s axe-qt-$LATEST_VERSION axe-qt
     fi
 
     # permission it ----------------------------------------------------------
 
     if [ ! -z "$SUDO_USER" ]; then
-        chown -h $SUDO_USER:$SUDO_USER {$DOWNLOAD_FILE,${DOWNLOAD_FILE}.DIGESTS.txt,dash-cli,dashd,dash-qt,dash*$LATEST_VERSION}
+        chown -h $SUDO_USER:$SUDO_USER {$DOWNLOAD_FILE,${DOWNLOAD_FILE}.DIGESTS.txt,axe-cli,axed,axe-qt,axe*$LATEST_VERSION}
     fi
 
     # purge it ---------------------------------------------------------------
 
-    rm -rf dash-0.12.0
+    rm -rf axe-0.12.0
 
     # preload it -------------------------------------------------------------
 
     pending " --> ${messages["bootstrapping"]} blockchain. ${messages["please_wait"]}\n"
     pending "  --> ${messages["downloading"]} bootstrap... "
-    BOOSTRAP_LINKS='https://raw.githubusercontent.com/UdjinM6/dash-bootstrap/master/links-mainnet.md'
+    BOOSTRAP_LINKS='https://raw.githubusercontent.com/UdjinM6/axe-bootstrap/master/links-mainnet.md'
     wget --no-check-certificate -q $BOOSTRAP_LINKS -O - | grep 'bootstrap\.dat\.zip' | grep 'sha256\.txt' > links.md
     MAINNET_BOOTSTRAP_FILE_1=$(head -1 links.md | awk '{print $9}' | sed 's/.*\(http.*\.zip\).*/\1/')
     MAINNET_BOOTSTRAP_FILE_1_SIZE=$(head -1 links.md | awk '{print $10}' | sed 's/[()]//g')
@@ -796,22 +796,22 @@ install_dashd(){
 
     # punch it ---------------------------------------------------------------
 
-    pending " --> ${messages["launching"]} dashd... "
-    $INSTALL_DIR/dashd > /dev/null
-    DASHD_RUNNING=1
+    pending " --> ${messages["launching"]} axed... "
+    $INSTALL_DIR/axed > /dev/null
+    AXED_RUNNING=1
     ok "${messages["done"]}"
 
     # probe it ---------------------------------------------------------------
 
-    pending " --> ${messages["waiting_for_dashd_to_respond"]}"
+    pending " --> ${messages["waiting_for_axed_to_respond"]}"
     echo -en "${C_YELLOW}"
-    while [ $DASHD_RUNNING == 1 ] && [ $DASHD_RESPONDING == 0 ]; do
+    while [ $AXED_RUNNING == 1 ] && [ $AXED_RESPONDING == 0 ]; do
         echo -n "."
-        _check_dashd_state
+        _check_axed_state
         sleep 2
     done
-    if [ $DASHD_RUNNING == 0 ]; then
-        die "\n - dashd unexpectedly quit. ${messages["exiting"]}"
+    if [ $AXED_RUNNING == 0 ]; then
+        die "\n - axed unexpectedly quit. ${messages["exiting"]}"
     fi
     ok "${messages["done"]}"
 
@@ -819,8 +819,8 @@ install_dashd(){
 
     pending " --> adding $INSTALL_DIR PATH to ~/.bash_aliases ... "
     if [ ! -f ~/.bash_aliases ]; then touch ~/.bash_aliases ; fi
-    sed -i.bak -e '/dashman_env/d' ~/.bash_aliases
-    echo "export PATH=$INSTALL_DIR:\$PATH ; # dashman_env" >> ~/.bash_aliases
+    sed -i.bak -e '/axerunner_env/d' ~/.bash_aliases
+    echo "export PATH=$INSTALL_DIR:\$PATH ; # axerunner_env" >> ~/.bash_aliases
     ok "${messages["done"]}"
 
 
@@ -832,81 +832,81 @@ install_dashd(){
 
     if [ $LATEST_VERSION == $CURRENT_VERSION ]; then
         echo -e ""
-        echo -e "${C_GREEN}dash ${LATEST_VERSION} ${messages["successfully_installed"]}$C_NORM"
+        echo -e "${C_GREEN}axe ${LATEST_VERSION} ${messages["successfully_installed"]}$C_NORM"
 
         echo -e ""
         echo -e "${C_GREEN}${messages["installed_in"]} ${INSTALL_DIR}$C_NORM"
         echo -e ""
-        ls -l --color {$DOWNLOAD_FILE,${DOWNLOAD_FILE}.DIGESTS.txt,dash-cli,dashd,dash-qt,dash*$LATEST_VERSION}
+        ls -l --color {$DOWNLOAD_FILE,${DOWNLOAD_FILE}.DIGESTS.txt,axe-cli,axed,axe-qt,axe*$LATEST_VERSION}
         echo -e ""
 
         if [ ! -z "$SUDO_USER" ]; then
             echo -e "${C_GREEN}Symlinked to: ${LINK_TO_SYSTEM_DIR}$C_NORM"
             echo -e ""
-            ls -l --color $LINK_TO_SYSTEM_DIR/{dashd,dash-cli}
+            ls -l --color $LINK_TO_SYSTEM_DIR/{axed,axe-cli}
             echo -e ""
         fi
 
     else
-        echo -e "${C_RED}${messages["dash_version"]} $CURRENT_VERSION ${messages["is_not_uptodate"]} ($LATEST_VERSION) ${messages["exiting"]}$C_NORM"
+        echo -e "${C_RED}${messages["axe_version"]} $CURRENT_VERSION ${messages["is_not_uptodate"]} ($LATEST_VERSION) ${messages["exiting"]}$C_NORM"
         exit 1
     fi
 
 }
 
-_get_dashd_proc_status(){
-    DASHD_HASPID=0
-    if [ -e $INSTALL_DIR/dashd.pid ] ; then
-        DASHD_HASPID=`ps --no-header \`cat $INSTALL_DIR/dashd.pid 2>/dev/null\` | wc -l`;
+_get_axed_proc_status(){
+    AXED_HASPID=0
+    if [ -e $INSTALL_DIR/axed.pid ] ; then
+        AXED_HASPID=`ps --no-header \`cat $INSTALL_DIR/axed.pid 2>/dev/null\` | wc -l`;
     else
-        DASHD_HASPID=$(pidof dashd)
+        AXED_HASPID=$(pidof axed)
         if [ $? -gt 0 ]; then
-            DASHD_HASPID=0
+            AXED_HASPID=0
         fi
     fi
-    DASHD_PID=$(pidof dashd)
+    AXED_PID=$(pidof axed)
 }
 
-get_dashd_status(){
+get_axed_status(){
 
-    _get_dashd_proc_status
+    _get_axed_proc_status
 
-    DASHD_UPTIME=$(ps -p $DASHD_PID -o etime= 2>/dev/null | sed -e 's/ //g')
-    DASHD_UPTIME_TIMES=$(echo "$DASHD_UPTIME" | perl -ne 'chomp ; s/-/:/ ; print join ":", reverse split /:/' 2>/dev/null )
-    DASHD_UPTIME_SECS=$( echo "$DASHD_UPTIME_TIMES" | cut -d: -f1 )
-    DASHD_UPTIME_MINS=$( echo "$DASHD_UPTIME_TIMES" | cut -d: -f2 )
-    DASHD_UPTIME_HOURS=$( echo "$DASHD_UPTIME_TIMES" | cut -d: -f3 )
-    DASHD_UPTIME_DAYS=$( echo "$DASHD_UPTIME_TIMES" | cut -d: -f4 )
-    if [ -z "$DASHD_UPTIME_DAYS" ]; then DASHD_UPTIME_DAYS=0 ; fi
-    if [ -z "$DASHD_UPTIME_HOURS" ]; then DASHD_UPTIME_HOURS=0 ; fi
-    if [ -z "$DASHD_UPTIME_MINS" ]; then DASHD_UPTIME_MINS=0 ; fi
-    if [ -z "$DASHD_UPTIME_SECS" ]; then DASHD_UPTIME_SECS=0 ; fi
+    AXED_UPTIME=$(ps -p $AXED_PID -o etime= 2>/dev/null | sed -e 's/ //g')
+    AXED_UPTIME_TIMES=$(echo "$AXED_UPTIME" | perl -ne 'chomp ; s/-/:/ ; print join ":", reverse split /:/' 2>/dev/null )
+    AXED_UPTIME_SECS=$( echo "$AXED_UPTIME_TIMES" | cut -d: -f1 )
+    AXED_UPTIME_MINS=$( echo "$AXED_UPTIME_TIMES" | cut -d: -f2 )
+    AXED_UPTIME_HOURS=$( echo "$AXED_UPTIME_TIMES" | cut -d: -f3 )
+    AXED_UPTIME_DAYS=$( echo "$AXED_UPTIME_TIMES" | cut -d: -f4 )
+    if [ -z "$AXED_UPTIME_DAYS" ]; then AXED_UPTIME_DAYS=0 ; fi
+    if [ -z "$AXED_UPTIME_HOURS" ]; then AXED_UPTIME_HOURS=0 ; fi
+    if [ -z "$AXED_UPTIME_MINS" ]; then AXED_UPTIME_MINS=0 ; fi
+    if [ -z "$AXED_UPTIME_SECS" ]; then AXED_UPTIME_SECS=0 ; fi
 
-    DASHD_LISTENING=`netstat -nat | grep LIST | grep 9999 | wc -l`;
-    DASHD_CONNECTIONS=`netstat -nat | grep ESTA | grep 9999 | wc -l`;
-    DASHD_CURRENT_BLOCK=`$DASH_CLI getblockcount 2>/dev/null`
-    if [ -z "$DASHD_CURRENT_BLOCK" ] ; then DASHD_CURRENT_BLOCK=0 ; fi
-    DASHD_GETINFO=`$DASH_CLI getinfo 2>/dev/null`;
-    DASHD_DIFFICULTY=$(echo "$DASHD_GETINFO" | grep difficulty | awk '{print $2}' | sed -e 's/[",]//g')
+    AXED_LISTENING=`netstat -nat | grep LIST | grep 9999 | wc -l`;
+    AXED_CONNECTIONS=`netstat -nat | grep ESTA | grep 9999 | wc -l`;
+    AXED_CURRENT_BLOCK=`$AXE_CLI getblockcount 2>/dev/null`
+    if [ -z "$AXED_CURRENT_BLOCK" ] ; then AXED_CURRENT_BLOCK=0 ; fi
+    AXED_GETINFO=`$AXE_CLI getinfo 2>/dev/null`;
+    AXED_DIFFICULTY=$(echo "$AXED_GETINFO" | grep difficulty | awk '{print $2}' | sed -e 's/[",]//g')
 
-    WEB_BLOCK_COUNT_CHAINZ=`$curl_cmd https://chainz.cryptoid.info/dash/api.dws?q=getblockcount`;
+    WEB_BLOCK_COUNT_CHAINZ=`$curl_cmd https://chainz.cryptoid.info/axe/api.dws?q=getblockcount`;
     if [ -z "$WEB_BLOCK_COUNT_CHAINZ" ]; then
         WEB_BLOCK_COUNT_CHAINZ=0
     fi
 
-    WEB_BLOCK_COUNT_DQA=`$curl_cmd https://explorer.dash.org/chain/Dash/q/getblockcount`;
+    WEB_BLOCK_COUNT_DQA=`$curl_cmd https://explorer.axe.org/chain/Axe/q/getblockcount`;
     if [ -z "$WEB_BLOCK_COUNT_DQA" ]; then
         WEB_BLOCK_COUNT_DQA=0
     fi
 
-    WEB_DASHWHALE=`$curl_cmd https://www.dashcentral.org/api/v1/public`;
-    if [ -z "$WEB_DASHWHALE" ]; then
+    WEB_AXEWHALE=`$curl_cmd https://www.axecentral.org/api/v1/public`;
+    if [ -z "$WEB_AXEWHALE" ]; then
         sleep 3
-        WEB_DASHWHALE=`$curl_cmd https://www.dashcentral.org/api/v1/public`;
+        WEB_AXEWHALE=`$curl_cmd https://www.axecentral.org/api/v1/public`;
     fi
 
-    WEB_DASHWHALE_JSON_TEXT=$(echo $WEB_DASHWHALE | python -m json.tool)
-    WEB_BLOCK_COUNT_DWHALE=$(echo "$WEB_DASHWHALE_JSON_TEXT" | grep consensus_blockheight | awk '{print $2}' | sed -e 's/[",]//g')
+    WEB_AXEWHALE_JSON_TEXT=$(echo $WEB_AXEWHALE | python -m json.tool)
+    WEB_BLOCK_COUNT_DWHALE=$(echo "$WEB_AXEWHALE_JSON_TEXT" | grep consensus_blockheight | awk '{print $2}' | sed -e 's/[",]//g')
 
     WEB_ME=`$curl_cmd https://www.masternode.me/data/block_state.txt 2>/dev/null`;
     if [[ $(echo "$WEB_ME" | grep cloudflare | wc -l) -gt 0 ]]; then
@@ -919,17 +919,17 @@ get_dashd_status(){
 
     CHECK_SYNC_AGAINST_HEIGHT=$(echo "$WEB_BLOCK_COUNT_CHAINZ $WEB_BLOCK_COUNT_ME $WEB_BLOCK_COUNT_DQA $WEB_BLOCK_COUNT_DWHALE" | tr " " "\n" | sort -rn | head -1)
 
-    DASHD_SYNCED=0
-    if [ $CHECK_SYNC_AGAINST_HEIGHT -ge $DASHD_CURRENT_BLOCK ] && [ $(($CHECK_SYNC_AGAINST_HEIGHT - 5)) -lt $DASHD_CURRENT_BLOCK ];then
-        DASHD_SYNCED=1
+    AXED_SYNCED=0
+    if [ $CHECK_SYNC_AGAINST_HEIGHT -ge $AXED_CURRENT_BLOCK ] && [ $(($CHECK_SYNC_AGAINST_HEIGHT - 5)) -lt $AXED_CURRENT_BLOCK ];then
+        AXED_SYNCED=1
     fi
 
-    DASHD_CONNECTED=0
-    if [ $DASHD_CONNECTIONS -gt 0 ]; then DASHD_CONNECTED=1 ; fi
+    AXED_CONNECTED=0
+    if [ $AXED_CONNECTIONS -gt 0 ]; then AXED_CONNECTED=1 ; fi
 
-    DASHD_UP_TO_DATE=0
+    AXED_UP_TO_DATE=0
     if [ $LATEST_VERSION == $CURRENT_VERSION ]; then
-        DASHD_UP_TO_DATE=1
+        AXED_UP_TO_DATE=1
     fi
 
     get_public_ips
@@ -947,15 +947,15 @@ get_dashd_status(){
 
     # masternode (remote!) specific
 
-    MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $HOME/.dash{,core}/dash.conf | wc -l 2>/dev/null)
-    MN_STARTED=`$DASH_CLI masternode status 2>&1 | grep 'successfully started' | wc -l`
+    MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $HOME/.axe{,core}/axe.conf | wc -l 2>/dev/null)
+    MN_STARTED=`$AXE_CLI masternode status 2>&1 | grep 'successfully started' | wc -l`
     MN_QUEUE_IN_SELECTION=0
     MN_QUEUE_LENGTH=0
     MN_QUEUE_POSITION=0
 
 
     NOW=`date +%s`
-    MN_LIST="$(cache_output /tmp/mnlist_cache '$DASH_CLI masternodelist full 2>/dev/null')"
+    MN_LIST="$(cache_output /tmp/mnlist_cache '$AXE_CLI masternodelist full 2>/dev/null')"
 
     SORTED_MN_LIST=$(echo "$MN_LIST" | grep ENABLED | sed -e 's/[}|{]//' -e 's/"//g' -e 's/,//g' | grep -v ^$ | \
 awk ' \
@@ -986,7 +986,7 @@ awk ' \
     #MN_EXPIRED=$(  echo "$SORTED_MN_LIST" | grep -c EXPIRED)
     MN_TOTAL=$(( $MN_ENABLED + $MN_UNHEALTHY ))
 
-    MN_SYNC_STATUS=$( $DASH_CLI mnsync status )
+    MN_SYNC_STATUS=$( $AXE_CLI mnsync status )
     MN_SYNC_ASSET=$(echo "$MN_SYNC_STATUS" | grep 'AssetName' | awk '{print $2}' | sed -e 's/[",]//g' )
     MN_SYNC_COMPLETE=$(echo "$MN_SYNC_STATUS" | grep 'IsSynced' | grep 'true' | wc -l)
 
@@ -1019,11 +1019,11 @@ awk ' \
     fi
 
     if [ $MN_CONF_ENABLED -gt 0 ] ; then
-        WEB_NINJA_API=$($curl_cmd "https://www.dashninja.pl/api/masternodes?ips=\[\"${MASTERNODE_BIND_IP}:9999\"\]&portcheck=1&balance=1")
+        WEB_NINJA_API=$($curl_cmd "https://www.axeninja.pl/api/masternodes?ips=\[\"${MASTERNODE_BIND_IP}:9999\"\]&portcheck=1&balance=1")
         if [ -z "$WEB_NINJA_API" ]; then
             sleep 2
             # downgrade connection to support distros with stale nss libraries
-            WEB_NINJA_API=$($curl_cmd --ciphers rsa_3des_sha "https://www.dashninja.pl/api/masternodes?ips=\[\"${MASTERNODE_BIND_IP}:9999\"\]&portcheck=1&balance=1")
+            WEB_NINJA_API=$($curl_cmd --ciphers rsa_3des_sha "https://www.axeninja.pl/api/masternodes?ips=\[\"${MASTERNODE_BIND_IP}:9999\"\]&portcheck=1&balance=1")
         fi
 
         WEB_NINJA_JSON_TEXT=$(echo $WEB_NINJA_API | python -m json.tool)
@@ -1089,28 +1089,28 @@ get_host_status(){
 
 print_status() {
 
-    DASHD_UPTIME_STRING="$DASHD_UPTIME_DAYS ${messages["days"]}, $DASHD_UPTIME_HOURS ${messages["hours"]}, $DASHD_UPTIME_MINS ${messages["mins"]}, $DASHD_UPTIME_SECS ${messages["secs"]}"
+    AXED_UPTIME_STRING="$AXED_UPTIME_DAYS ${messages["days"]}, $AXED_UPTIME_HOURS ${messages["hours"]}, $AXED_UPTIME_MINS ${messages["mins"]}, $AXED_UPTIME_SECS ${messages["secs"]}"
 
     pending "${messages["status_hostnam"]}" ; ok "$HOSTNAME"
     pending "${messages["status_uptimeh"]}" ; ok "$HOST_UPTIME_DAYS ${messages["days"]}, $HOST_LOAD_AVERAGE"
-    pending "${messages["status_dashdip"]}" ; [ $MASTERNODE_BIND_IP != 'none' ] && ok "$MASTERNODE_BIND_IP" || err "$MASTERNODE_BIND_IP"
-    pending "${messages["status_dashdve"]}" ; ok "$CURRENT_VERSION"
-    pending "${messages["status_uptodat"]}" ; [ $DASHD_UP_TO_DATE -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_running"]}" ; [ $DASHD_HASPID     -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_uptimed"]}" ; [ $DASHD_RUNNING    -gt 0 ] && ok "$DASHD_UPTIME_STRING" || err "$DASHD_UPTIME_STRING"
-    pending "${messages["status_drespon"]}" ; [ $DASHD_RUNNING    -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_dlisten"]}" ; [ $DASHD_LISTENING  -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_dconnec"]}" ; [ $DASHD_CONNECTED  -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_axedip"]}" ; [ $MASTERNODE_BIND_IP != 'none' ] && ok "$MASTERNODE_BIND_IP" || err "$MASTERNODE_BIND_IP"
+    pending "${messages["status_axedve"]}" ; ok "$CURRENT_VERSION"
+    pending "${messages["status_uptodat"]}" ; [ $AXED_UP_TO_DATE -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_running"]}" ; [ $AXED_HASPID     -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_uptimed"]}" ; [ $AXED_RUNNING    -gt 0 ] && ok "$AXED_UPTIME_STRING" || err "$AXED_UPTIME_STRING"
+    pending "${messages["status_drespon"]}" ; [ $AXED_RUNNING    -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_dlisten"]}" ; [ $AXED_LISTENING  -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_dconnec"]}" ; [ $AXED_CONNECTED  -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
     pending "${messages["status_dportop"]}" ; [ $PUBLIC_PORT_CLOSED  -lt 1 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_dconcnt"]}" ; [ $DASHD_CONNECTIONS   -gt 0 ] && ok "$DASHD_CONNECTIONS" || err "$DASHD_CONNECTIONS"
-    pending "${messages["status_dblsync"]}" ; [ $DASHD_SYNCED     -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_dbllast"]}" ; [ $DASHD_SYNCED     -gt 0 ] && ok "$DASHD_CURRENT_BLOCK" || err "$DASHD_CURRENT_BLOCK"
+    pending "${messages["status_dconcnt"]}" ; [ $AXED_CONNECTIONS   -gt 0 ] && ok "$AXED_CONNECTIONS" || err "$AXED_CONNECTIONS"
+    pending "${messages["status_dblsync"]}" ; [ $AXED_SYNCED     -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_dbllast"]}" ; [ $AXED_SYNCED     -gt 0 ] && ok "$AXED_CURRENT_BLOCK" || err "$AXED_CURRENT_BLOCK"
     pending "${messages["status_webchai"]}" ; [ $WEB_BLOCK_COUNT_CHAINZ -gt 0 ] && ok "$WEB_BLOCK_COUNT_CHAINZ" || err "$WEB_BLOCK_COUNT_CHAINZ"
     pending "${messages["status_webdark"]}" ; [ $WEB_BLOCK_COUNT_DQA    -gt 0 ] && ok "$WEB_BLOCK_COUNT_DQA" || err "$WEB_BLOCK_COUNT_DQA"
-    pending "${messages["status_webdash"]}" ; [ $WEB_BLOCK_COUNT_DWHALE -gt 0 ] && ok "$WEB_BLOCK_COUNT_DWHALE" || err "$WEB_BLOCK_COUNT_DWHALE"
+    pending "${messages["status_webaxe"]}" ; [ $WEB_BLOCK_COUNT_DWHALE -gt 0 ] && ok "$WEB_BLOCK_COUNT_DWHALE" || err "$WEB_BLOCK_COUNT_DWHALE"
     pending "${messages["status_webmast"]}" ; [ $WEB_ME_FORK_DETECT -gt 0 ] && err "$WEB_ME" || ok "$WEB_ME"
-    pending "${messages["status_dcurdif"]}" ; ok "$DASHD_DIFFICULTY"
-    if [ $DASHD_RUNNING -gt 0 ] && [ $MN_CONF_ENABLED -gt 0 ] ; then
+    pending "${messages["status_dcurdif"]}" ; ok "$AXED_DIFFICULTY"
+    if [ $AXED_RUNNING -gt 0 ] && [ $MN_CONF_ENABLED -gt 0 ] ; then
     pending "${messages["status_mnstart"]}" ; [ $MN_STARTED -gt 0  ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
     pending "${messages["status_mnvislo"]}" ; [ $MN_VISIBLE -gt 0  ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
         if [ $WEB_NINJA_API_OFFLINE -eq 0 ]; then
@@ -1131,7 +1131,7 @@ print_status() {
     pending "    sentinel online          : " ; [ $SENTINEL_LAUNCH_OK -eq 0  ] && ok "${messages["YES"]}" || ([ $MN_SYNC_COMPLETE -eq 0 ] && warn "${messages["NO"]} - sync incomplete") || err "${messages["NO"]}"
 
         else
-    err     "  dashninja api offline        " ;
+    err     "  axeninja api offline        " ;
         fi
     else
     pending "${messages["status_mncount"]}" ; [ $MN_TOTAL            -gt 0 ] && ok "$MN_TOTAL" || err "$MN_TOTAL"
@@ -1143,7 +1143,7 @@ show_message_configure() {
     ok "${messages["to_enable_masternode"]}"
     ok "${messages["uncomment_conf_lines"]}"
     echo
-         pending "    $HOME/.dashcore/dash.conf" ; echo
+         pending "    $HOME/.axecore/axe.conf" ; echo
     echo
     echo -e "$C_GREEN install sentinel$C_NORM"
     echo
@@ -1204,7 +1204,7 @@ install_sentinel() {
 
     pending "  --> ${messages["downloading"]} sentinel... "
 
-    git clone -q https://github.com/dashpay/sentinel.git
+    git clone -q https://github.com/axepay/sentinel.git
 
     ok "${messages["done"]}"
 

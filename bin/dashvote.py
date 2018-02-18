@@ -21,13 +21,13 @@ git_dir = os.path.abspath(
         os.path.dirname(
             os.path.abspath(__file__)),
         '..'))
-dash_conf_dir = os.path.join(os.getenv('HOME'), '.dashcore')
-dash_cli_path = os.getenv('DASH_CLI')
-if os.getenv('DASHMAN_PID') is None:
+axe_conf_dir = os.path.join(os.getenv('HOME'), '.axecore')
+axe_cli_path = os.getenv('AXE_CLI')
+if os.getenv('AXERUNNER_PID') is None:
     quit("--> please run using 'axerunner vote'")
 
 sys.path.append(git_dir + '/lib')
-import dashutil
+import axeutil
 
 
 urnd = random.SystemRandom()
@@ -83,8 +83,8 @@ if "check_output" not in dir( subprocess ):
 def run_command(cmd):
     return subprocess.check_output(cmd, shell=True)
 
-def run_dash_cli_command(cmd):
-    return run_command("%s %s" % (dash_cli_path or 'dash-cli', cmd))
+def run_axe_cli_command(cmd):
+    return run_command("%s %s" % (axe_cli_path or 'axe-cli', cmd))
 
 def next_vote(sel_ent):
     sel_ent += 1
@@ -178,7 +178,7 @@ def submit_votes(win, ballot, s):
             delays = offsets[:1] + [y-x for x,y in zip(offsets, offsets[1:])]
 
             if background_send:
-                deferred_votes = tempfile.NamedTemporaryFile(prefix=('sending_dashvote_votes-%s=' % batch_timestamp),delete=False)
+                deferred_votes = tempfile.NamedTemporaryFile(prefix=('sending_axevote_votes-%s=' % batch_timestamp),delete=False)
                 deferred_votes.write("#!/bin/bash\n")
                 deferred_votes.write("set -x\n")
                 os.chmod(deferred_votes.name, 0700)
@@ -205,8 +205,8 @@ def submit_votes(win, ballot, s):
                 netvote = '|'.join([str(node['fundtx']),str(votes_to_send[vote][u'Hash']),"1",
                         str(votes_to_send[vote][u'vote'] == 'YES' and 1 or votes_to_send[vote][u'vote'] == 'NO' and 2 or 3),str(random_ts)])
                 mnprivkey = node['mnprivkey']
-                signature = dashutil.sign_vote(netvote, mnprivkey)
-                command = ('%s' % dash_cli_path is not None and dash_cli_path or 'dash-cli') + ' voteraw ' + str(node['txid']) + ' ' + str(node['txout']) + ' ' + str(
+                signature = axeutil.sign_vote(netvote, mnprivkey)
+                command = ('%s' % axe_cli_path is not None and axe_cli_path or 'axe-cli') + ' voteraw ' + str(node['txid']) + ' ' + str(node['txout']) + ' ' + str(
                     votes_to_send[vote][u'Hash']) + ' funding ' + str(votes_to_send[vote][u'vote']).lower() + ' ' + str(random_ts) + ' ' + signature
                 if background_send:
                     sleeptime = delays.pop(0)
@@ -227,7 +227,7 @@ def submit_votes(win, ballot, s):
                 stdscr.refresh()
 
         if background_send:
-            voter_parent = tempfile.NamedTemporaryFile(prefix=('sending_dash_votes-%s-' % batch_timestamp), delete=False)
+            voter_parent = tempfile.NamedTemporaryFile(prefix=('sending_axe_votes-%s-' % batch_timestamp), delete=False)
             voter_parent.write("#!/bin/bash\n")
             voter_parent.write('trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT' + "\n")
             os.chmod(voter_parent.name, 0700)
@@ -310,22 +310,22 @@ def main(screen):
     C_GREEN = curses.color_pair(3)
     C_RED = curses.color_pair(2)
 
-    if dash_cli_path is None:
-        # test dash-cli in path -- TODO make robust
+    if axe_cli_path is None:
+        # test axe-cli in path -- TODO make robust
         try:
-            run_command('dash-cli getinfo')
+            run_command('axe-cli getinfo')
         except subprocess.CalledProcessError:
             quit(
-                "--> cannot find dash-cli in $PATH\n" +
-                "    do: export PATH=/path/to/dash-cli-folder:$PATH\n" +
+                "--> cannot find axe-cli in $PATH\n" +
+                "    do: export PATH=/path/to/axe-cli-folder:$PATH\n" +
                 "    and try again\n")
 
     loadwin = curses.newwin(40, 40, 1, 2)
 
-    loadwin.addstr(1, 2, 'dashvote version: ' + version, C_CYAN)
+    loadwin.addstr(1, 2, 'axevote version: ' + version, C_CYAN)
 
-    mncount = int(run_dash_cli_command('masternode count enabled'))
-    block_height = int(run_dash_cli_command('getblockcount'))
+    mncount = int(run_axe_cli_command('masternode count enabled'))
+    block_height = int(run_axe_cli_command('getblockcount'))
     blocks_to_next_cycle = (16616 - (block_height % 16616))
     next_cycle_epoch = int(int(time.time()) + (157.5 * blocks_to_next_cycle))
     days_to_next_cycle = blocks_to_next_cycle / 576.0
@@ -337,7 +337,7 @@ def main(screen):
     time.sleep(1)
 
     # get ballot
-    ballots = json.loads(run_dash_cli_command('gobject list all'))
+    ballots = json.loads(run_axe_cli_command('gobject list all'))
     ballot = {}
 
     for entry in ballots:
@@ -364,7 +364,7 @@ def main(screen):
             continue
 
         ballots[entry][u'vote'] = 'SKIP'
-        ballots[entry][u'votes'] = json.loads(run_dash_cli_command('gobject getvotes %s' % entry))
+        ballots[entry][u'votes'] = json.loads(run_axe_cli_command('gobject getvotes %s' % entry))
 
         ballot[entry] = ballots[entry]
 
@@ -403,7 +403,7 @@ def main(screen):
 
     # extract mnprivkey,txid-txidx from masternode.conf
     masternodes = {}
-    with open(os.path.join(dash_conf_dir, 'masternode.conf'), 'r') as f:
+    with open(os.path.join(axe_conf_dir, 'masternode.conf'), 'r') as f:
         lines = list(
             line
             for line in
@@ -420,8 +420,8 @@ def main(screen):
                 "txid": conf[3],
                 "txout": conf[4]}
     if not masternodes:
-        # fallback to dash.conf entries if no masternode.conf entries
-        with open(os.path.join(dash_conf_dir, 'dash.conf'), 'r') as f:
+        # fallback to axe.conf entries if no masternode.conf entries
+        with open(os.path.join(axe_conf_dir, 'axe.conf'), 'r') as f:
             lines = list(
                 line
                 for line in
@@ -432,17 +432,17 @@ def main(screen):
                 n, v = line.split('=')
                 conf[n.strip(' ')] = v.strip(' ')
             if all(k in conf for k in ('masternode', 'externalip', 'masternodeprivkey')):
-                # get funding tx from dashninja
+                # get funding tx from axeninja
                 import urllib2
                 mninfo = urllib2.urlopen(
-                    "https://dashninja.pl/api/masternodes?ips=[\"" +
+                    "https://axeninja.pl/api/masternodes?ips=[\"" +
                     conf['externalip'] + ":9999" +
                     "\"]&portcheck=1").read()
                 try:
                     mndata = json.loads(mninfo)
                     d = mndata[u'data'][0]
                 except:
-                    quit('cannot retrieve masternode info from dashninja')
+                    quit('cannot retrieve masternode info from axeninja')
                 vin = str(d[u'MasternodeOutputHash'])
                 vidx = str(d[u'MasternodeOutputIndex'])
                 masternodes[vin + '-' + vidx] = {
@@ -454,7 +454,7 @@ def main(screen):
                     "txid": vin,
                     "txout": vidx}
             else:
-                quit('cannot find masternode information in dash.conf')
+                quit('cannot find masternode information in axe.conf')
 
     # TODO open previous votes/local storage something
     for entry in ballot:
@@ -478,7 +478,7 @@ def main(screen):
     votewin.keypad(1)
     votewin.border()
 
-    votewin.addstr(1, 2, 'dashvote version: ' + version, C_CYAN)
+    votewin.addstr(1, 2, 'axevote version: ' + version, C_CYAN)
     votewin.addstr(
         2,
         2,

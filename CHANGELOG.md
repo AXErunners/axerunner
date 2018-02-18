@@ -3,7 +3,7 @@
     enh - add highlight color for selection pending and startup states
 
     compat - bootstrap path change
-    compat - update dashd 12.2
+    compat - update axed 12.2
 
     config - beautify changelog print
     config - colorize compat class commits
@@ -18,18 +18,18 @@
     bugfix - masternodeaddr -> externalip
     bugfix - missing newline in status output
     bugfix - repair state display when PRE_ENABLED
-    bugfix - dashvote - skip stale proposals
+    bugfix - axevote - skip stale proposals
 
-    style - dashvote - text edits
+    style - axevote - text edits
 
 
 0.1.25 -  Sun Mar 26 05:00:38 2017 +0000
 
-    enh - add .dashcore to path in .bash_aliases on install
+    enh - add .axecore to path in .bash_aliases on install
     enh - better block sync check
-    enh - better dashd running detection
+    enh - better axed running detection
     enh - better sentinel sync messaging
-    enh - dashvote 12.1 compat - background delayed sends
+    enh - axevote 12.1 compat - background delayed sends
     enh - invoke sudo install on missing dependencies
     enh - move versioned executibles to bin dir - fixes tab completion
     enh - show download progress bar + fancy terminal cleanup
@@ -62,8 +62,8 @@
     config - display bootstrap download size
     config - only require unzip for install (for bootstrap extraction)
     bugfix - fix ok/err display arity
-    bugfix - dashvote - prune completed proposals
-    bugfix - follow redirects - dashninja 301->www
+    bugfix - axevote - prune completed proposals
+    bugfix - follow redirects - axeninja 301->www
     bugfix - proper queue position calculation for new nodes
 
 0.1.19 -  Tue Jun 21 08:01:55 2016 +0000
@@ -80,13 +80,13 @@
 
 0.1.16 -  Tue Dec 29 05:41:43 2015 +0000
 
-    bugfix - support dash.org downloads page shift to relative pathing
+    bugfix - support axe.org downloads page shift to relative pathing
 
 0.1.15 -  Thu Nov 26 02:57:45 2015 +0000
 
-    update download url to dash.org
-    bugfix - support stale nss lib - downgrade second dashninja attempt
-    dashvote - monkey-patch subprocess.check_output for python <2.7
+    update download url to axe.org
+    bugfix - support stale nss lib - downgrade second axeninja attempt
+    axevote - monkey-patch subprocess.check_output for python <2.7
 
 0.1.14 -  Sun Nov 1 03:57:56 2015 +0000
 
@@ -96,20 +96,20 @@
     bugfix - ip-lookup failover to http if https fails (older distro cert issue)
     bugfix - support symlink invocation
 
-    dashvote - added git checkout info to version header
-    dashvote - added loading screen, previous vote detection, vim navigation binding
-    dashvote - added vote-counts, turnout percentage
-    dashvote - bugfix - use alias for vote display - added threshold coloring, sort vote display by block start
-    dashvote - align count/percentage columns
-    dashvote - display vote hash during voting
-    dashvote - ignore unmapped keystrokes
+    axevote - added git checkout info to version header
+    axevote - added loading screen, previous vote detection, vim navigation binding
+    axevote - added vote-counts, turnout percentage
+    axevote - bugfix - use alias for vote display - added threshold coloring, sort vote display by block start
+    axevote - align count/percentage columns
+    axevote - display vote hash during voting
+    axevote - ignore unmapped keystrokes
 
 0.1.13 -  Sun Oct 25 05:49:37 2015 +0000
 
     initial i18n support - adding polish (thanks tombtc!)
     enh - gather all missing dependencies before exiting
 
-    bugfix - fail gracefully when dashninja api offline
+    bugfix - fail gracefully when axeninja api offline
     bugfix - proper api-down test logic, doh!
     bugfix - silence misconfigured locale perl errors
 
@@ -126,7 +126,7 @@
     bugfix - detect netcat -4,-6 switch support before embarking, prompt to install appropriate package
     bugfix - hide stderr output during dependency tests
     bugfix - retry web pulls once on failure - retry public ip lookup on failure
-    bugfix - status - fail gracefully if dashd not running
+    bugfix - status - fail gracefully if axed not running
     bugfix - vote - dont crash when masternode votes exceeds screen height
     compat - fixes for older oses - stderr and git syntax
 
@@ -139,7 +139,7 @@
     added balance display
 
     bugfix - proper sync exec when called from relative path
-    bugfix - voting - fail gracefully when dash-cli not in path
+    bugfix - voting - fail gracefully when axe-cli not in path
     bugfix - use initial api pull values for last payment
     bugfix - proper ipv6 formatting for hot-node voting
 
@@ -150,8 +150,8 @@
 0.1.10 -  Tue Oct 13 07:18:29 2015 +0000
 
     added ipv6 support - use icanhazip for ipv4/6 polling
-    added dashd uptime calculation
-    added support for hot-node (Internet server) dash.conf voting
+    added axed uptime calculation
+    added support for hot-node (Internet server) axe.conf voting
     added initial host metrics: uptime/load average
     added dependency check on launch
     added last masternode payment display
@@ -163,7 +163,7 @@
 
 0.1.9 - Sun Oct 11 04:05:54 2015 +0000
 
-    added dashvote - time-randomized voting, initial curses UI
+    added axevote - time-randomized voting, initial curses UI
 
     enh - display changelog output on sync update
     enh - remove stale local git tags on sync
@@ -180,7 +180,7 @@
     added instructions for enabling masternode (conf edits) after install
 
     bugfix - better boolean test for reinstall mode
-    bugfix - die if cannot determine latest-version from/retrieve dashpay downloads page
+    bugfix - die if cannot determine latest-version from/retrieve axepay downloads page
     bugfix - five second connect timeout for public port test
 
 0.1.7 - Mon Sep 14 02:59:05 2015 +0000
@@ -190,11 +190,11 @@
 
 0.1.6 - Tue Sep 8 07:07:57 2015 +0000
 
-    added dashninja masternode visibility
+    added axeninja masternode visibility
 
 0.1.5 - Thu Sep 10 21:34:29 2015 +0000
 
-    added dashwhale, masternode.me polling
+    added axewhale, masternode.me polling
 
 0.1.4 - Wed Sep 9 07:55:44 2015 +0000
 
@@ -203,7 +203,7 @@
 
 0.1.3 - Wed Sep 9 05:02:29 2015 +0000
 
-    added dashninja masternode visibility
+    added axeninja masternode visibility
 
 0.1.2 - Tue Sep 8 07:07:57 2015 +0000
 
@@ -220,15 +220,15 @@
     takes command line arguments:
 
         install
-            - install latest dash executables (fresh install)
+            - install latest axe executables (fresh install)
         reinstall
-            - reinstall latest dash executables (overwrite existing)
+            - reinstall latest axe executables (overwrite existing)
         update
-            - update to latest dash executables (update existing)
+            - update to latest axe executables (update existing)
         sync
             - sync with github (git fetch/reset)
         restart
-            - restarts (or starts) dashd
+            - restarts (or starts) axed
 
 
 0.0.8 - Thu Aug 27 07:57:15 2015 +0000
@@ -238,7 +238,7 @@
         --reinstall
         -h, --help
         -v, --version
-    sync_dashman_to_github.sh now pulls and sync's forced tags
+    sync_axerunner_to_github.sh now pulls and sync's forced tags
 
 
 0.0.7 - Thu Aug 27 07:57:15 2015 +0000
