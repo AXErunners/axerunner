@@ -82,6 +82,6 @@ given the optional 'now' argument.
 * pv
 * python
 * unzip
-* axed, axe-cli - version 12 or greater to update
+* axed, axe-cli
 
 Based on Axeman https://github.com/moocowmoo/axerunner
