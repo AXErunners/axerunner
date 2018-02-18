@@ -8,7 +8,7 @@ DASH wallet/daemon management utilities - version 0.1.26
 
 # Install/Usage
 
-To install dashman do:
+To install axerunner do:
 
     sudo apt-get install python git unzip pv
     cd ~ && git clone https://github.com/AXErunners/axerunner
@@ -16,48 +16,48 @@ To install dashman do:
 To update your existing version 12 32/64bit linux dash wallet to the latest
 dashd, do:
 
-    dashman/dashman update
+    axerunner/axerunner update
 
 To perform a new install of dash, do:
 
-    dashman/dashman install
+    axerunner/axerunner install
 
 To overwrite an existing dash install, do:
 
-    dashman/dashman reinstall
+    axerunner/axerunner reinstall
 
-To update dashman to the latest version, do:
+To update axerunner to the latest version, do:
 
-    dashman/dashman sync
+    axerunner/axerunner sync
 
 To restart (or start) dashd, do:
 
-    dashman/dashman restart
+    axerunner/axerunner restart
 
 To get the current status of dashd, do:
 
-    dashman/dashman status
+    axerunner/axerunner status
 
 
 # Commands
 
 ## sync
 
-"dashman sync" updates dashman to the latest version from github
+"axerunner sync" updates axerunner to the latest version from github
 
 ## install
 
-"dashman install" downloads and initializes a fresh dash install into ~/.dashcore
+"axerunner install" downloads and initializes a fresh dash install into ~/.dashcore
 unless already present
 
 ## reinstall
 
-"dashman reinstall" downloads and overwrites existing dash executables, even if
+"axerunner reinstall" downloads and overwrites existing dash executables, even if
 already present
 
 ## update
 
-where it all began, "dashman update" searches for your dashd/dash-cli
+where it all began, "axerunner update" searches for your dashd/dash-cli
 executibles in the current directory, ~/.dashcore, and $PATH.  It will prompt
 to install in the first directory found containing both dashd and dash-cli.
 Multiple wallet directories are not supported. The script assumes the host runs
@@ -65,7 +65,7 @@ a single instance of dashd.
 
 ## restart
 
-"dashman restart [now]" restarts (or starts) dashd. Searches for dash-cli/dashd
+"axerunner restart [now]" restarts (or starts) dashd. Searches for dash-cli/dashd
 the current directory, ~/.dashcore, and $PATH. It will prompt to restart if not
 given the optional 'now' argument.
 
@@ -73,7 +73,7 @@ given the optional 'now' argument.
 
 ## status
 
-"dashman status" interrogates the locally running dashd and displays its status
+"axerunner status" interrogates the locally running dashd and displays its status
 
 <a href="#status-1">screencap</a>
 

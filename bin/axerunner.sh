@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# dashman - main executable
+# axerunner - main executable
 # installs, updates, and manages dash daemons and wallets
 
 # Copyright (c) 2015-2017 moocowmoo - moocowmoo@masternode.me
@@ -8,7 +8,7 @@
 # check we're running bash 4 -------------------------------------------------
 
 if [[ ${BASH_VERSION%%.*} != '4' ]];then
-    die "dashman requires bash version 4. please update. exiting."
+    die "axerunner requires bash version 4. please update. exiting."
 fi
 
 # parse any command line switches --------------------------------------------
@@ -127,7 +127,7 @@ case "$1" in
                 fi
                 # check command matches:
                 # monit
-                # dashman
+                # axerunner
                 # ???
             else
                 install_dashd

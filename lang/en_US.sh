@@ -3,7 +3,7 @@
 
 messages=(
 
-    ["dashman_version"]="dashman version"
+    ["dashman_version"]="axerunner version"
     ["gathering_info"]="gathering info, please wait... "
     ["done"]="DONE!"
     ["exiting"]="Exiting."
@@ -42,7 +42,7 @@ messages=(
     ["err_no_pkg_mgr"]="cannot determine platform/package manager"
     ["err_missing_dependency"]="missing dependency:"
     ["err_unknown_platform"]="unknown platform:"
-    ["err_dashman_supports"]="dashman currently only supports 32/64bit linux"
+    ["err_dashman_supports"]="axerunner currently only supports 32/64bit linux"
     ["err_could_not_get_version"]="Could not find latest version from"
     ["err_failed_ip_resolve"]="failed to resolve public ip. retrying... "
 
@@ -54,17 +54,17 @@ messages=(
     ["is_not_uptodate"]="is not up to date."
     ["is_uptodate"]="is up to date."
     ["preexisting_dir"]="pre-existing directory"
-    ["run_reinstall"]="Run 'dashman reinstall' to overwrite."
+    ["run_reinstall"]="Run 'axerunner reinstall' to overwrite."
     ["reinstall_to"]="reinstall to"
     ["and_install_to"]="and install to"
 
     ["exec_found_in_system_dir"]="dash executables found in system dir"
-    ["run_dashman_as_root"]=". Run dashman as root (sudo dashman command) to continue."
+    ["run_dashman_as_root"]=". Run axerunner as root (sudo axerunner command) to continue."
     ["dashd_not_found"]="dashd not found in"
     ["dashcli_not_found"]="dash-cli not found in"
     ["dashcli_not_found_in_cwd"]="cannot find dash-cli in current directory"
 
-    ["sync_to_github"]="sync dashman to github now?"
+    ["sync_to_github"]="sync axerunner to github now?"
 
     ["usage"]="USAGE"
     ["commands"]="COMMANDS"
@@ -74,8 +74,8 @@ messages=(
     ["usage_restart_description"]="restarts dashd and deletes:"
     ["usage_restart_description_now"]="will prompt user if not given the 'now' argument"
     ["usage_status_description"]="polls local and web sources and displays current status"
-    ["usage_sync_description"]="updates dashman to latest github version"
-    ["usage_branch_description"]="switch dashman to an alternate/experimental github branch"
+    ["usage_sync_description"]="updates axerunner to latest github version"
+    ["usage_branch_description"]="switch axerunner to an alternate/experimental github branch"
     ["usage_vote_description"]="cast masternode votes for distributed budget ballot items"
     ["usage_reinstall_description"]="overwrites dash with latest version and restarts (see below)"
     ["usage_version_description"]="prints dashmans version number and exits"
@@ -88,7 +88,7 @@ messages=(
     ["quit_uptodate"]="Up to date."
 
     ["requires_updating"]="requires updating. Latest version is:"
-    ["requires_sync"]="Do 'dashman sync' manually, or choose yes below."
+    ["requires_sync"]="Do 'axerunner sync' manually, or choose yes below."
 
     ["no_forks_detected"]="no forks detected"
 

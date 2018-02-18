@@ -26,7 +26,7 @@ else
     DASHMAN_CHECKOUT=" ("$DASHMAN_CHECKOUT")"
 fi
 
-curl_cmd="timeout 7 curl -s -L -A dashman/$DASHMAN_VERSION"
+curl_cmd="timeout 7 curl -s -L -A axerunner/$DASHMAN_VERSION"
 wget_cmd='wget --no-check-certificate -q'
 
 
@@ -261,7 +261,7 @@ _find_dash_directory() {
 
 
 _check_dashman_updates() {
-    GITHUB_DASHMAN_VERSION=$( $curl_cmd https://raw.githubusercontent.com/moocowmoo/dashman/master/VERSION )
+    GITHUB_DASHMAN_VERSION=$( $curl_cmd https://raw.githubusercontent.com/moocowmoo/axerunner/master/VERSION )
     if [ ! -z "$GITHUB_DASHMAN_VERSION" ] && [ "$DASHMAN_VERSION" != "$GITHUB_DASHMAN_VERSION" ]; then
         echo -e "\n"
         echo -e "${C_RED}${0##*/} ${messages["requires_updating"]} $C_GREEN$GITHUB_DASHMAN_VERSION$C_RED\n${messages["requires_sync"]}$C_NORM\n"
@@ -1147,11 +1147,11 @@ show_message_configure() {
     echo
     echo -e "$C_GREEN install sentinel$C_NORM"
     echo
-    echo -e "    ${C_YELLOW}dashman install sentinel$C_NORM"
+    echo -e "    ${C_YELLOW}axerunner install sentinel$C_NORM"
     echo
     echo -e "$C_GREEN ${messages["then_run"]}$C_NORM"
     echo
-    echo -e "    ${C_YELLOW}dashman restart now$C_NORM"
+    echo -e "    ${C_YELLOW}axerunner restart now$C_NORM"
     echo
 }
 

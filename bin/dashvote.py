@@ -24,7 +24,7 @@ git_dir = os.path.abspath(
 dash_conf_dir = os.path.join(os.getenv('HOME'), '.dashcore')
 dash_cli_path = os.getenv('DASH_CLI')
 if os.getenv('DASHMAN_PID') is None:
-    quit("--> please run using 'dashman vote'")
+    quit("--> please run using 'axerunner vote'")
 
 sys.path.append(git_dir + '/lib')
 import dashutil

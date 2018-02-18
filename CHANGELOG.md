@@ -8,7 +8,7 @@
     config - beautify changelog print
     config - colorize compat class commits
     config - match new links.md format
-    config - useragent dashman/version
+    config - useragent axerunner/version
 
     Fix 12.2.2 compat
     bugfix - add failover url to block_state pull
@@ -215,7 +215,7 @@
 
 0.1.0 - Mon Sep 7 00:12:24 2015 +0000
 
-    created new top-level script 'dashman'
+    created new top-level script 'axerunner'
 
     takes command line arguments:
 

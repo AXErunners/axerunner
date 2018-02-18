@@ -42,7 +42,7 @@ messages=(
     ["err_no_pkg_mgr"]="nie można znaleźć platformy/menadżera pakietów"
     ["err_missing_dependency"]="brakujące zależności:"
     ["err_unknown_platform"]="nieznana platforma:"
-    ["err_dashman_supports"]="dashman obecnie wspiera tylko 32/64bit linux"
+    ["err_dashman_supports"]="axerunner obecnie wspiera tylko 32/64bit linux"
     ["err_could_not_get_version"]="Nie można znaleźć najnowszej wersji z"
     ["err_failed_ip_resolve"]="nie udało się uzyskac publicznego IP. Probuje ponownie... "
 
@@ -54,12 +54,12 @@ messages=(
     ["is_not_uptodate"]="nie jest aktualna."
     ["is_uptodate"]="jest aktualna."
     ["preexisting_dir"]="znaleziono istniejący katalog"
-    ["run_reinstall"]="Uruchom 'dashman reinstall' zeby nadpisac."
+    ["run_reinstall"]="Uruchom 'axerunner reinstall' zeby nadpisac."
     ["reinstall_to"]="przeinstalowac"
     ["and_install_to"]="i zainstaluj do"
 
     ["exec_found_in_system_dir"]="znaleziono pliki wykonywalne dash w"
-    ["run_dashman_as_root"]=". Uruchom dashman jako root (komenda sudo dashman) aby kontynuować."
+    ["run_dashman_as_root"]=". Uruchom axerunner jako root (komenda sudo axerunner) aby kontynuować."
     ["dashd_not_found"]="nie znaleziono dashd w"
     ["dashcli_not_found"]="nie znaleziono dash-cli w"
     ["dashcli_not_found_in_cwd"]="nie znaleziono dash-cli w obecnym katalogu"
@@ -88,7 +88,7 @@ messages=(
     ["quit_uptodate"]="Zaktualizowane."
 
     ["requires_updating"]="wymaga aktualizacji. Najnowsza wersja:"
-    ["requires_sync"]="Wykonaj 'dashman sync' ręcznie, lub wybierz jedną z opcji poniżej."
+    ["requires_sync"]="Wykonaj 'axerunner sync' ręcznie, lub wybierz jedną z opcji poniżej."
 
     ["no_forks_detected"]="nie wykryto forków"
 
