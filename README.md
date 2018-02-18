@@ -3,7 +3,7 @@
 AXE wallet/daemon management utilities - version 0.1.26
 
 * This script installs, updates, and manages single-user axe daemons and wallets
-* It is currently only compatible with 32/64 bit linux.
+* It is currently only compatible with 32/64 bit Linux.
 * Multi-user (system directory) installs are not supported
 
 # Install/Usage
@@ -69,13 +69,9 @@ a single instance of axed.
 the current directory, ~/.axecore, and $PATH. It will prompt to restart if not
 given the optional 'now' argument.
 
-<a href="#restart-1">screencap</a>
-
 ## status
 
 "axerunner status" interrogates the locally running axed and displays its status
-
-<a href="#status-1">screencap</a>
 
 # Dependencies
 
