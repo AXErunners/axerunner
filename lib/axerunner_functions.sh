@@ -13,9 +13,9 @@ C_PURPLE="\e[35m"
 C_CYAN="\e[36m"
 C_NORM="\e[0m"
 
-AXE_ORG='https://www.axe.org'
-DOWNLOAD_PAGE='https://www.axe.org/downloads/'
-CHECKSUM_URL='https://www.axe.org/binaries/SHA256SUMS.asc'
+AXE_ORG='https://github.com/AXErunners/axe'
+DOWNLOAD_PAGE='https://github.com/AXErunners/axe/releases'
+CHECKSUM_URL='https://github.com/AXErunners/axe/releases'
 AXED_RUNNING=0
 AXED_RESPONDING=0
 AXERUNNER_VERSION=$(cat $AXERUNNER_GITDIR/VERSION)
@@ -326,14 +326,14 @@ _get_versions() {
         if [ $DOWNLOAD_FOR == 'linux' ] ; then
             if [[ $url =~ .*linux${BITS}.* ]] ; then
                 if [[ ! $url =~ "http" ]] ; then
-                    url=$AXE_ORG"/binaries/"$url
+                    url=$AXE_ORG"/releases/"$url
                 fi
                 DOWNLOAD_URL=$url
                 DOWNLOAD_FILE=${DOWNLOAD_URL##*/}
             fi
         elif [ $DOWNLOAD_FOR == 'RPi2' ] ; then
             if [[ ! $url =~ "http" ]] ; then
-                url=$AXE_ORG"/binaries/"$url
+                url=$AXE_ORG"/releases/"$url
             fi
             DOWNLOAD_URL=$url
             DOWNLOAD_FILE=${DOWNLOAD_URL##*/}
@@ -399,7 +399,7 @@ restart_axed(){
 update_axed(){
 
     if [ $LATEST_VERSION != $CURRENT_VERSION ] || [ ! -z "$REINSTALL" ] ; then
-                    
+
 
         if [ ! -z "$REINSTALL" ];then
             echo -e ""
@@ -554,7 +554,7 @@ update_axed(){
 
             pending " --> updating sentinel... "
             cd sentinel
-            git remote update >/dev/null 2>&1 
+            git remote update >/dev/null 2>&1
             git reset -q --hard origin/master
             cd ..
             ok "${messages["done"]}"
@@ -1236,7 +1236,7 @@ install_sentinel() {
     ok "${messages["done"]}"
 
     pending "  --> testing installation... "
-    venv/bin/py.test ./test/ 2>&1>/dev/null; 
+    venv/bin/py.test ./test/ 2>&1>/dev/null;
     if [[ $? -gt 0 ]];then
         err "  --> sentinel tests failed"
         pending "  when running: " ; echo
