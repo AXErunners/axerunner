@@ -2,7 +2,8 @@
 
 # axerunner_functions.sh - common functions and variables
 
-# Copyright (c) 2015-2017 moocowmoo - moocowmoo@masternode.me
+# Copyright (c) 2015-2017 moocowmoo
+# Copyright (c) 2017-2018 AXErunners
 
 # variables are for putting things in ----------------------------------------
 
