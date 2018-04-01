@@ -261,7 +261,7 @@ _find_axe_directory() {
 
 
 _check_axerunner_updates() {
-    GITHUB_AXERUNNER_VERSION=$( $curl_cmd https://raw.githubusercontent.com/moocowmoo/axerunner/master/VERSION )
+    GITHUB_AXERUNNER_VERSION=$( $curl_cmd https://raw.githubusercontent.com/axerunners/axerunner/master/VERSION )
     if [ ! -z "$GITHUB_AXERUNNER_VERSION" ] && [ "$AXERUNNER_VERSION" != "$GITHUB_AXERUNNER_VERSION" ]; then
         echo -e "\n"
         echo -e "${C_RED}${0##*/} ${messages["requires_updating"]} $C_GREEN$GITHUB_AXERUNNER_VERSION$C_RED\n${messages["requires_sync"]}$C_NORM\n"
