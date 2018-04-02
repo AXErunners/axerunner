@@ -85,4 +85,4 @@ given the optional 'now' argument.
 * python
 * unzip
 
-_Based on Dashman https://github.com/moocowmoo/dashman
+_Based on Dashman_ https://github.com/moocowmoo/dashman
