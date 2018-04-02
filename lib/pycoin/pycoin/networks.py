@@ -43,7 +43,7 @@ NETWORKS = (
 
     # DRK Axe mainnet : drkv/drkp
     NetworkValues(
-        "Axe", "mainnet", "AXE", b'\xcc', b'\x4c', b'\x10', h2b("02fe52f8"), h2b("02fe52cc")),
+        "Axe", "mainnet", "AXE", b'\xcc', b'\x37', b'\x10', h2b('0488ADE4'), h2b('0488B21E')),
 
     # DRK Axe testnet : DRKV/DRKP
     NetworkValues(
