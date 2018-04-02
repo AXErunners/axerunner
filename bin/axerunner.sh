@@ -4,6 +4,8 @@
 # installs, updates, and manages axe daemons and wallets
 
 # Copyright (c) 2015-2017 moocowmoo - moocowmoo@masternode.me
+# Copyright (c) 2017-2018 AXErunners
+
 
 # check we're running bash 4 -------------------------------------------------
 
