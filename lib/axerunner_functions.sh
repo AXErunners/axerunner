@@ -16,7 +16,7 @@ C_NORM="\e[0m"
 
 AXE_ORG='https://axerunners.com/'
 DOWNLOAD_PAGE='https://axerunners.com/downloads/'
-CHECKSUM_URL='https://github.com/AXErunners/axe/releases/download/v1.1.2/axecore-1.1.2-linux64.tar.gz.asc'
+CHECKSUM_URL='https://github.com/AXErunners/axe/releases/download/v1.1.2/SHA256SUMS.asc'
 AXED_RUNNING=0
 AXED_RESPONDING=0
 AXERUNNER_VERSION=$(cat $AXERUNNER_GITDIR/VERSION)
