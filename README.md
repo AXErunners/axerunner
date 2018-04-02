@@ -75,6 +75,8 @@ given the optional 'now' argument.
 
 # Dependencies
 
+* axed
+* axe-cli
 * bash version 4
 * nc (netcat)
 * curl
@@ -82,6 +84,5 @@ given the optional 'now' argument.
 * pv
 * python
 * unzip
-* axed, axe-cli
 
 Based on Dashman https://github.com/moocowmoo/dashman
