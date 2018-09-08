@@ -14,9 +14,9 @@ C_PURPLE="\e[35m"
 C_CYAN="\e[36m"
 C_NORM="\e[0m"
 
-AXE_ORG='https://axerunners.com/'
-DOWNLOAD_PAGE='https://axerunners.com/downloads/'
-CHECKSUM_URL='https://github.com/AXErunners/axe/releases/download/v1.1.2/SHA256SUMS.asc'
+
+GITHUB_API_AXE="https://api.github.com/repos/axerunners/axe"
+
 AXED_RUNNING=0
 AXED_RESPONDING=0
 AXERUNNER_VERSION=$(cat $AXERUNNER_GITDIR/VERSION)
@@ -27,7 +27,7 @@ else
     AXERUNNER_CHECKOUT=" ("$AXERUNNER_CHECKOUT")"
 fi
 
-curl_cmd="timeout 7 curl -s -L -A axerunner/$AXERUNNER_VERSION"
+curl_cmd="timeout 7 curl -k -s -L -A axerunner/$AXERUNNER_VERSION"
 wget_cmd='wget --no-check-certificate -q'
 
 
@@ -262,7 +262,7 @@ _find_axe_directory() {
 
 
 _check_axerunner_updates() {
-    GITHUB_AXERUNNER_VERSION=$( $curl_cmd https://raw.githubusercontent.com/axerunners/axerunner/master/VERSION )
+    GITHUB_AXERUNNER_VERSION=$( $curl_cmd https://raw.githubusercontent.com/charlesrocket/axerunner/master/VERSION )
     if [ ! -z "$GITHUB_AXERUNNER_VERSION" ] && [ "$AXERUNNER_VERSION" != "$GITHUB_AXERUNNER_VERSION" ]; then
         echo -e "\n"
         echo -e "${C_RED}${0##*/} ${messages["requires_updating"]} $C_GREEN$GITHUB_AXERUNNER_VERSION$C_RED\n${messages["requires_sync"]}$C_NORM\n"
@@ -281,13 +281,18 @@ _get_platform_info() {
     PLATFORM=$(uname -m)
     case "$PLATFORM" in
         i[3-6]86)
-            BITS=32
+            PLAT=i686-pc
             ;;
         x86_64)
-            BITS=64
+            PLAT=x86_64
             ;;
-        armv7l|aarch64)
-            BITS=32
+        armv7l)
+            PLAT=arm
+            ARM=1
+            BIGARM=$(grep -E "(BCM2709|Freescale i\\.MX6)" /proc/cpuinfo | wc -l)
+            ;;
+        aarch64)
+            PLAT=aarch64
             ARM=1
             BIGARM=$(grep -E "(BCM2709|Freescale i\\.MX6)" /proc/cpuinfo | wc -l)
             ;;
@@ -309,33 +314,24 @@ _get_versions() {
         DOWNLOAD_FOR='RPi2'
     fi
 
+    GITHUB_RELEASE_JSON="$($curl_cmd $GITHUB_API_AXE/releases/latest | python -mjson.tool)"
+    CHECKSUM_URL=$(echo "$GITHUB_RELEASE_JSON" | grep browser_download | grep SUMS.asc | cut -d'"' -f4)
     CHECKSUM_FILE=$( $curl_cmd $CHECKSUM_URL )
-    DOWNLOAD_HTML=$( echo "$CHECKSUM_FILE" )
 
-    read -a DOWNLOAD_URLS <<< $( echo $DOWNLOAD_HTML | sed -e 's/ /\n/g' | grep -v '.asc' | grep $DOWNLOAD_FOR | tr "\n" " ")
-
+    read -a DOWNLOAD_URLS <<< $( echo "$GITHUB_RELEASE_JSON" | grep browser_download | grep -v 'debug' | grep -v '.asc' | grep $DOWNLOAD_FOR | cut -d'"' -f4 | tr "\n" " ")
     #$(( <-- vim syntax highlighting fix
-    LATEST_VERSION=$( echo ${DOWNLOAD_URLS[0]} | perl -ne '/axecore-([0-9.]+)-/; print $1;' 2>/dev/null )
+
+    LATEST_VERSION=$(echo "$GITHUB_RELEASE_JSON" | grep tag_name | cut -d'"' -f4 | tr -d 'v')
+    TARDIR="axecore-${LATEST_VERSION::-2}"
     if [ -z "$LATEST_VERSION" ]; then
-        die "\n${messages["err_could_not_get_version"]} $DOWNLOAD_PAGE -- ${messages["exiting"]}"
+        die "\n${messages["err_could_not_get_version"]} -- ${messages["exiting"]}"
     fi
 
     if [ -z "$AXE_CLI" ]; then AXE_CLI='echo'; fi
     CURRENT_VERSION=$( $AXE_CLI --version | perl -ne '/v([0-9.]+)/; print $1;' 2>/dev/null ) 2>/dev/null
     for url in "${DOWNLOAD_URLS[@]}"
     do
-        if [ $DOWNLOAD_FOR == 'linux' ] ; then
-            if [[ $url =~ .*linux${BITS}.* ]] ; then
-                if [[ ! $url =~ "http" ]] ; then
-                    url=$AXE_ORG"/releases/"$url
-                fi
-                DOWNLOAD_URL=$url
-                DOWNLOAD_FILE=${DOWNLOAD_URL##*/}
-            fi
-        elif [ $DOWNLOAD_FOR == 'RPi2' ] ; then
-            if [[ ! $url =~ "http" ]] ; then
-                url=$AXE_ORG"/releases/"$url
-            fi
+        if [[ $url =~ .*${PLAT}-linux.* ]] ; then
             DOWNLOAD_URL=$url
             DOWNLOAD_FILE=${DOWNLOAD_URL##*/}
         fi
@@ -440,7 +436,7 @@ update_axed(){
 
         pending " --> ${messages["downloading"]} ${DOWNLOAD_URL}... "
         wget --no-check-certificate -q -r $DOWNLOAD_URL -O $DOWNLOAD_FILE
-        wget --no-check-certificate -q -r https://github.com/axepay/axe/releases/download/v$LATEST_VERSION/SHA256SUMS.asc -O ${DOWNLOAD_FILE}.DIGESTS.txt
+        wget --no-check-certificate -q -r https://github.com/axerunners/axe/releases/download/v$LATEST_VERSION/SHA256SUMS.asc -O ${DOWNLOAD_FILE}.DIGESTS.txt
         if [ ! -e $DOWNLOAD_FILE ] ; then
             echo -e "${C_RED}${messages["err_downloading_file"]}"
             echo -e "${messages["err_tried_to_get"]} $DOWNLOAD_URL$C_NORM"
@@ -501,10 +497,10 @@ update_axed(){
 
         # place it ---------------------------------------------------------------
 
-        mv axecore-0.12.2/bin/axed axed-$LATEST_VERSION
-        mv axecore-0.12.2/bin/axe-cli axe-cli-$LATEST_VERSION
+        mv $TARDIR/bin/axed axed-$LATEST_VERSION
+        mv $TARDIR/bin/axe-cli axe-cli-$LATEST_VERSION
         if [ $PLATFORM != 'armv7l' ];then
-            mv axecore-0.12.2/bin/axe-qt axe-qt-$LATEST_VERSION
+            mv $TARDIR/bin/axe-qt axe-qt-$LATEST_VERSION
         fi
         ln -s axed-$LATEST_VERSION axed
         ln -s axe-cli-$LATEST_VERSION axe-cli
@@ -522,7 +518,8 @@ update_axed(){
 
         rm -rf axe-0.12.0
         rm -rf axecore-0.12.1*
-        rm -rf axecore-0.12.2
+        rm -rf axecore-0.12.2*
+        rm -rf $TARDIR
 
         # punch it ---------------------------------------------------------------
 
@@ -644,8 +641,8 @@ install_axed(){
 #        if [ ! -z "$USE_IPV6" ]; then
 #            IPADDR='['$PUBLIC_IPV6']'
 #        fi
-        RPCUSER=`echo $(dd if=/dev/urandom bs=128 count=1 2>/dev/null) | sha256sum | awk '{print $1}'`
-        RPCPASS=`echo $(dd if=/dev/urandom bs=128 count=1 2>/dev/null) | sha256sum | awk '{print $1}'`
+        RPCUSER=`echo $(dd if=/dev/urandom bs=32 count=1 2>/dev/null) | sha256sum | awk '{print $1}'`
+        RPCPASS=`echo $(dd if=/dev/urandom bs=32 count=1 2>/dev/null) | sha256sum | awk '{print $1}'`
         while read; do
             eval echo "$REPLY"
         done < $AXERUNNER_GITDIR/.axe.conf.template > $INSTALL_DIR/axe.conf
@@ -661,8 +658,8 @@ install_axed(){
     pending " --> ${messages["downloading"]} ${DOWNLOAD_URL}... "
     tput sc
     echo -e "$C_CYAN"
-    $wget_cmd -O - $DOWNLOAD_URL | pv -trep -s27M -w80 -N wallet > $DOWNLOAD_FILE
-    $wget_cmd -O - https://github.com/axepay/axe/releases/download/v$LATEST_VERSION/SHA256SUMS.asc | pv -trep -w80 -N checksums > ${DOWNLOAD_FILE}.DIGESTS.txt
+    $wget_cmd -O - $DOWNLOAD_URL | pv -trep -s28787607 -w80 -N wallet > $DOWNLOAD_FILE
+    $wget_cmd -O - https://github.com/axerunners/axe/releases/download/v$LATEST_VERSION/SHA256SUMS.asc | pv -trep -w80 -N checksums > ${DOWNLOAD_FILE}.DIGESTS.txt
     echo -ne "$C_NORM"
     clear_n_lines 2
     tput rc
@@ -732,10 +729,10 @@ install_axed(){
 
     # place it ---------------------------------------------------------------
 
-    mv axecore-0.12.2/bin/axed axed-$LATEST_VERSION
-    mv axecore-0.12.2/bin/axe-cli axe-cli-$LATEST_VERSION
+    mv $TARDIR/bin/axed axed-$LATEST_VERSION
+    mv $TARDIR/bin/axe-cli axe-cli-$LATEST_VERSION
     if [ $PLATFORM != 'armv7l' ];then
-        mv axecore-0.12.2/bin/axe-qt axe-qt-$LATEST_VERSION
+        mv $TARDIR/bin/axe-qt axe-qt-$LATEST_VERSION
     fi
     ln -s axed-$LATEST_VERSION axed
     ln -s axe-cli-$LATEST_VERSION axe-cli
@@ -752,6 +749,9 @@ install_axed(){
     # purge it ---------------------------------------------------------------
 
     rm -rf axe-0.12.0
+    rm -rf axecore-0.12.1*
+    rm -rf axecore-0.12.2*
+    rm -rf $TARDIR
 
     # preload it -------------------------------------------------------------
 
@@ -761,7 +761,7 @@ install_axed(){
     wget --no-check-certificate -q $BOOSTRAP_LINKS -O - | grep 'bootstrap\.dat\.zip' | grep 'sha256\.txt' > links.md
     MAINNET_BOOTSTRAP_FILE_1=$(head -1 links.md | awk '{print $9}' | sed 's/.*\(http.*\.zip\).*/\1/')
     MAINNET_BOOTSTRAP_FILE_1_SIZE=$(head -1 links.md | awk '{print $10}' | sed 's/[()]//g')
-    MAINNET_BOOTSTRAP_FILE_1_SIZE_M=$(( $(echo $MAINNET_BOOTSTRAP_FILE_1_SIZE | sed -e 's/[^0-9]//g') * 99 ))
+    MAINNET_BOOTSTRAP_FILE_1_SIZE_M=$(( $(echo $MAINNET_BOOTSTRAP_FILE_1_SIZE | sed -e 's/[^0-9]//g') * 100 ))
     MAINNET_BOOTSTRAP_FILE_2=$(head -3 links.md | tail -1 | awk '{print $9}' | sed 's/.*\(http.*\.zip\).*/\1/')
     pending " $MAINNET_BOOTSTRAP_FILE_1_SIZE... "
     tput sc
@@ -790,7 +790,7 @@ install_axed(){
         echo -ne "$C_NORM"
         clear_n_lines 1
         tput rc
-        tput cuu 1
+        tput cuu 2
         ok "${messages["done"]}"
         rm -f links.md bootstrap.dat*.zip
     fi
@@ -883,8 +883,8 @@ get_axed_status(){
     if [ -z "$AXED_UPTIME_MINS" ]; then AXED_UPTIME_MINS=0 ; fi
     if [ -z "$AXED_UPTIME_SECS" ]; then AXED_UPTIME_SECS=0 ; fi
 
-    AXED_LISTENING=`netstat -nat | grep LIST | grep 9999 | wc -l`;
-    AXED_CONNECTIONS=`netstat -nat | grep ESTA | grep 9999 | wc -l`;
+    AXED_LISTENING=`netstat -nat | grep LIST | grep 9937 | wc -l`;
+    AXED_CONNECTIONS=`netstat -nat | grep ESTA | grep 9937 | wc -l`;
     AXED_CURRENT_BLOCK=`$AXE_CLI getblockcount 2>/dev/null`
     if [ -z "$AXED_CURRENT_BLOCK" ] ; then AXED_CURRENT_BLOCK=0 ; fi
     AXED_GETINFO=`$AXE_CLI getinfo 2>/dev/null`;
@@ -895,7 +895,7 @@ get_axed_status(){
         WEB_BLOCK_COUNT_CHAINZ=0
     fi
 
-    WEB_BLOCK_COUNT_DQA=`$curl_cmd https://explorer.axe.org/chain/Axe/q/getblockcount`;
+    WEB_BLOCK_COUNT_DQA=`$curl_cmd https://explorer.axe.org/chain/AXE/q/getblockcount`;
     if [ -z "$WEB_BLOCK_COUNT_DQA" ]; then
         WEB_BLOCK_COUNT_DQA=0
     fi
@@ -910,7 +910,7 @@ get_axed_status(){
     WEB_BLOCK_COUNT_DWHALE=$(echo "$WEB_AXEWHALE_JSON_TEXT" | grep consensus_blockheight | awk '{print $2}' | sed -e 's/[",]//g')
 
     WEB_ME=`$curl_cmd https://www.masternode.me/data/block_state.txt 2>/dev/null`;
-    if [[ $(echo "$WEB_ME" | grep cloudflare | wc -l) -gt 0 ]]; then
+    if [[ -z "$WEB_ME" ]] || [[ $(echo "$WEB_ME" | grep cloudflare | wc -l) -gt 0 ]]; then
         WEB_ME=`$curl_cmd https://stats.masternode.me/data/block_state.txt 2>/dev/null`;
     fi
     WEB_BLOCK_COUNT_ME=$( echo $WEB_ME | awk '{print $1}')
@@ -936,9 +936,9 @@ get_axed_status(){
     get_public_ips
 
     MASTERNODE_BIND_IP=$PUBLIC_IPV4
-    PUBLIC_PORT_CLOSED=$( timeout 2 nc -4 -z $PUBLIC_IPV4 9999 2>&1 >/dev/null; echo $? )
+    PUBLIC_PORT_CLOSED=$( timeout 2 nc -4 -z $PUBLIC_IPV4 9937 2>&1 >/dev/null; echo $? )
 #    if [ $PUBLIC_PORT_CLOSED -ne 0 ] && [ ! -z "$PUBLIC_IPV6" ]; then
-#        PUBLIC_PORT_CLOSED=$( timeout 2 nc -6 -z $PUBLIC_IPV6 9999 2>&1 >/dev/null; echo $? )
+#        PUBLIC_PORT_CLOSED=$( timeout 2 nc -6 -z $PUBLIC_IPV6 9937 2>&1 >/dev/null; echo $? )
 #        if [ $PUBLIC_PORT_CLOSED -eq 0 ]; then
 #            MASTERNODE_BIND_IP=$PUBLIC_IPV6
 #        fi
@@ -1020,11 +1020,11 @@ awk ' \
     fi
 
     if [ $MN_CONF_ENABLED -gt 0 ] ; then
-        WEB_NINJA_API=$($curl_cmd "https://www.axeninja.pl/api/masternodes?ips=\[\"${MASTERNODE_BIND_IP}:9999\"\]&portcheck=1&balance=1")
+        WEB_NINJA_API=$($curl_cmd "https://www.axeninja.pl/api/masternodes?ips=\[\"${MASTERNODE_BIND_IP}:9937\"\]&portcheck=1&balance=1")
         if [ -z "$WEB_NINJA_API" ]; then
             sleep 2
             # downgrade connection to support distros with stale nss libraries
-            WEB_NINJA_API=$($curl_cmd --ciphers rsa_3des_sha "https://www.axeninja.pl/api/masternodes?ips=\[\"${MASTERNODE_BIND_IP}:9999\"\]&portcheck=1&balance=1")
+            WEB_NINJA_API=$($curl_cmd --ciphers rsa_3des_sha "https://www.axeninja.pl/api/masternodes?ips=\[\"${MASTERNODE_BIND_IP}:9937\"\]&portcheck=1&balance=1")
         fi
 
         WEB_NINJA_JSON_TEXT=$(echo $WEB_NINJA_API | python -m json.tool)
@@ -1205,7 +1205,7 @@ install_sentinel() {
 
     pending "  --> ${messages["downloading"]} sentinel... "
 
-    git clone -q https://github.com/axepay/sentinel.git
+    git clone -q https://github.com/axerunners/sentinel.git
 
     ok "${messages["done"]}"
 
