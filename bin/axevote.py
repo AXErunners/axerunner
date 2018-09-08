@@ -436,7 +436,7 @@ def main(screen):
                 import urllib2
                 mninfo = urllib2.urlopen(
                     "https://axeninja.pl/api/masternodes?ips=[\"" +
-                    conf['externalip'] + ":9999" +
+                    conf['externalip'] + ":9937" +
                     "\"]&portcheck=1").read()
                 try:
                     mndata = json.loads(mninfo)
