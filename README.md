@@ -13,16 +13,16 @@ To install axerunner do:
     sudo apt-get install python git unzip pv
     cd ~ && git clone https://github.com/charlesrocket/axerunner
 
-To update your existing version 12 32/64bit linux axe wallet to the latest
+To update your existing version 32/64bit linux AXE wallet to the latest
 axed, do:
 
     axerunner/axerunner update
 
-To perform a new install of axe, do:
+To perform a new install of AXE, do:
 
     axerunner/axerunner install
 
-To overwrite an existing axe install, do:
+To overwrite an existing AXE install, do:
 
     axerunner/axerunner reinstall
 
@@ -47,12 +47,12 @@ To get the current status of axed, do:
 
 ## install
 
-"axerunner install" downloads and initializes a fresh axe install into ~/.axecore
+"axerunner install" downloads and initializes a fresh AXE install into ~/.axecore
 unless already present
 
 ## reinstall
 
-"axerunner reinstall" downloads and overwrites existing axe executables, even if
+"axerunner reinstall" downloads and overwrites existing AXE executables, even if
 already present
 
 ## update
