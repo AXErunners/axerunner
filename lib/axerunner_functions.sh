@@ -2,8 +2,7 @@
 
 # axerunner_functions.sh - common functions and variables
 
-# Copyright (c) 2015-2017 moocowmoo
-# Copyright (c) 2017-2018 AXErunners
+# Copyright (c) 2015-2017 moocowmoo - moocowmoo@masternode.me
 
 # variables are for putting things in ----------------------------------------
 
@@ -890,36 +889,6 @@ get_axed_status(){
     AXED_GETINFO=`$AXE_CLI getinfo 2>/dev/null`;
     AXED_DIFFICULTY=$(echo "$AXED_GETINFO" | grep difficulty | awk '{print $2}' | sed -e 's/[",]//g')
 
-    WEB_BLOCK_COUNT_CHAINZ=`$curl_cmd https://chainz.cryptoid.info/axe/api.dws?q=getblockcount`;
-    if [ -z "$WEB_BLOCK_COUNT_CHAINZ" ]; then
-        WEB_BLOCK_COUNT_CHAINZ=0
-    fi
-
-    WEB_BLOCK_COUNT_DQA=`$curl_cmd https://explorer.axe.org/chain/AXE/q/getblockcount`;
-    if [ -z "$WEB_BLOCK_COUNT_DQA" ]; then
-        WEB_BLOCK_COUNT_DQA=0
-    fi
-
-    WEB_AXEWHALE=`$curl_cmd https://www.axecentral.org/api/v1/public`;
-    if [ -z "$WEB_AXEWHALE" ]; then
-        sleep 3
-        WEB_AXEWHALE=`$curl_cmd https://www.axecentral.org/api/v1/public`;
-    fi
-
-    WEB_AXEWHALE_JSON_TEXT=$(echo $WEB_AXEWHALE | python -m json.tool)
-    WEB_BLOCK_COUNT_DWHALE=$(echo "$WEB_AXEWHALE_JSON_TEXT" | grep consensus_blockheight | awk '{print $2}' | sed -e 's/[",]//g')
-
-    WEB_ME=`$curl_cmd https://www.masternode.me/data/block_state.txt 2>/dev/null`;
-    if [[ -z "$WEB_ME" ]] || [[ $(echo "$WEB_ME" | grep cloudflare | wc -l) -gt 0 ]]; then
-        WEB_ME=`$curl_cmd https://stats.masternode.me/data/block_state.txt 2>/dev/null`;
-    fi
-    WEB_BLOCK_COUNT_ME=$( echo $WEB_ME | awk '{print $1}')
-    WEB_ME_FORK_DETECT=$( echo $WEB_ME | grep 'fork detected' | wc -l )
-
-    WEB_ME=$(echo $WEB_ME | sed -s "s/no forks detected/${messages["no_forks_detected"]}/")
-
-    CHECK_SYNC_AGAINST_HEIGHT=$(echo "$WEB_BLOCK_COUNT_CHAINZ $WEB_BLOCK_COUNT_ME $WEB_BLOCK_COUNT_DQA $WEB_BLOCK_COUNT_DWHALE" | tr " " "\n" | sort -rn | head -1)
-
     AXED_SYNCED=0
     if [ $CHECK_SYNC_AGAINST_HEIGHT -ge $AXED_CURRENT_BLOCK ] && [ $(($CHECK_SYNC_AGAINST_HEIGHT - 5)) -lt $AXED_CURRENT_BLOCK ];then
         AXED_SYNCED=1
@@ -1106,10 +1075,6 @@ print_status() {
     pending "${messages["status_dconcnt"]}" ; [ $AXED_CONNECTIONS   -gt 0 ] && ok "$AXED_CONNECTIONS" || err "$AXED_CONNECTIONS"
     pending "${messages["status_dblsync"]}" ; [ $AXED_SYNCED     -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
     pending "${messages["status_dbllast"]}" ; [ $AXED_SYNCED     -gt 0 ] && ok "$AXED_CURRENT_BLOCK" || err "$AXED_CURRENT_BLOCK"
-    pending "${messages["status_webchai"]}" ; [ $WEB_BLOCK_COUNT_CHAINZ -gt 0 ] && ok "$WEB_BLOCK_COUNT_CHAINZ" || err "$WEB_BLOCK_COUNT_CHAINZ"
-    pending "${messages["status_webdark"]}" ; [ $WEB_BLOCK_COUNT_DQA    -gt 0 ] && ok "$WEB_BLOCK_COUNT_DQA" || err "$WEB_BLOCK_COUNT_DQA"
-    pending "${messages["status_webaxe"]}" ; [ $WEB_BLOCK_COUNT_DWHALE -gt 0 ] && ok "$WEB_BLOCK_COUNT_DWHALE" || err "$WEB_BLOCK_COUNT_DWHALE"
-    pending "${messages["status_webmast"]}" ; [ $WEB_ME_FORK_DETECT -gt 0 ] && err "$WEB_ME" || ok "$WEB_ME"
     pending "${messages["status_dcurdif"]}" ; ok "$AXED_DIFFICULTY"
     if [ $AXED_RUNNING -gt 0 ] && [ $MN_CONF_ENABLED -gt 0 ] ; then
     pending "${messages["status_mnstart"]}" ; [ $MN_STARTED -gt 0  ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
