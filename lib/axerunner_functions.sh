@@ -321,7 +321,7 @@ _get_versions() {
     #$(( <-- vim syntax highlighting fix
 
     LATEST_VERSION=$(echo "$GITHUB_RELEASE_JSON" | grep tag_name | cut -d'"' -f4 | tr -d 'v')
-    TARDIR="axecore-${LATEST_VERSION::-1}"
+    TARDIR="axecore-${LATEST_VERSION::0}"
     if [ -z "$LATEST_VERSION" ]; then
         die "\n${messages["err_could_not_get_version"]} -- ${messages["exiting"]}"
     fi
@@ -747,9 +747,9 @@ install_axed(){
 
     # purge it ---------------------------------------------------------------
 
-    rm -rf axe-0.12.0
-    rm -rf axecore-0.12.1*
-    rm -rf axecore-0.12.2*
+    rm -rf axe-1.1.8
+    rm -rf axecore-1.1.8*
+    rm -rf axecore-1.1.7*
     rm -rf $TARDIR
 
     # preload it -------------------------------------------------------------
