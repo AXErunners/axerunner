@@ -752,48 +752,6 @@ install_axed(){
     rm -rf axecore-1.1.7*
     rm -rf $TARDIR
 
-    # preload it -------------------------------------------------------------
-
-    pending " --> ${messages["bootstrapping"]} blockchain. ${messages["please_wait"]}\n"
-    pending "  --> ${messages["downloading"]} bootstrap... "
-    BOOSTRAP_LINKS='https://raw.githubusercontent.com/UdjinM6/axe-bootstrap/master/links-mainnet.md'
-    wget --no-check-certificate -q $BOOSTRAP_LINKS -O - | grep 'bootstrap\.dat\.zip' | grep 'sha256\.txt' > links.md
-    MAINNET_BOOTSTRAP_FILE_1=$(head -1 links.md | awk '{print $9}' | sed 's/.*\(http.*\.zip\).*/\1/')
-    MAINNET_BOOTSTRAP_FILE_1_SIZE=$(head -1 links.md | awk '{print $10}' | sed 's/[()]//g')
-    MAINNET_BOOTSTRAP_FILE_1_SIZE_M=$(( $(echo $MAINNET_BOOTSTRAP_FILE_1_SIZE | sed -e 's/[^0-9]//g') * 100 ))
-    MAINNET_BOOTSTRAP_FILE_2=$(head -3 links.md | tail -1 | awk '{print $9}' | sed 's/.*\(http.*\.zip\).*/\1/')
-    pending " $MAINNET_BOOTSTRAP_FILE_1_SIZE... "
-    tput sc
-    echo -e "$C_CYAN"
-    $wget_cmd -O - $MAINNET_BOOTSTRAP_FILE_1 | pv -trepa -s${MAINNET_BOOTSTRAP_FILE_1_SIZE_M}m -w80 -N bootstrap > ${MAINNET_BOOTSTRAP_FILE_1##*/}
-    MAINNET_BOOTSTRAP_FILE=${MAINNET_BOOTSTRAP_FILE_1##*/}
-    if [ ! -s $MAINNET_BOOTSTRAP_FILE ]; then
-        rm $MAINNET_BOOTSTRAP_FILE
-        $wget_cmd -O - $MAINNET_BOOTSTRAP_FILE_2 | pv -trepa -s${MAINNET_BOOTSTRAP_FILE_1_SIZE_M}m -w80 -N bootstrap > ${MAINNET_BOOTSTRAP_FILE_2##*/}
-        MAINNET_BOOTSTRAP_FILE=${MAINNET_BOOTSTRAP_FILE_2##*/}
-    fi
-    echo -ne "$C_NORM"
-    clear_n_lines 1
-    tput rc
-    tput cuu 2
-    if [ ! -s $MAINNET_BOOTSTRAP_FILE ]; then
-        # TODO i18n
-        err " bootstrap download failed. skipping."
-    else
-        ok "${messages["done"]}"
-        pending "  --> ${messages["unzipping"]} bootstrap... "
-        tput sc
-        echo -e "$C_CYAN"
-        BOOTSTRAP_SIZE_M=$(( $(unzip -l ${MAINNET_BOOTSTRAP_FILE##*/} | grep -v zip | grep bootstrap.dat | awk '{print $1}') / 1024 / 1024 ))
-        unzip -qp ${MAINNET_BOOTSTRAP_FILE##*/} | pv -trep -s${BOOTSTRAP_SIZE_M}m -w80 -N 'unpacking bootstrap' > bootstrap.dat
-        echo -ne "$C_NORM"
-        clear_n_lines 1
-        tput rc
-        tput cuu 2
-        ok "${messages["done"]}"
-        rm -f links.md bootstrap.dat*.zip
-    fi
-
     # punch it ---------------------------------------------------------------
 
     pending " --> ${messages["launching"]} axed... "
