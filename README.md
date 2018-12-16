@@ -1,9 +1,9 @@
 # AXErunner
 
-AXE wallet/daemon management utilities - version 0.1.26
+AXE wallet/daemon management utilities - version 0.1.27
 
 * This script installs, updates, and manages single-user axe daemons and wallets
-* It is currently only compatible with 32/64 bit Linux.
+* It is currently only compatible with 32/64 bit linux.
 * Multi-user (system directory) installs are not supported
 
 # Install/Usage
@@ -11,7 +11,7 @@ AXE wallet/daemon management utilities - version 0.1.26
 To install axerunner do:
 
     sudo apt-get install python git unzip pv
-    cd ~ && git clone https://github.com/AXErunners/axerunner
+    cd ~ && git clone https://github.com/charlesrocket/axerunner
 
 To update your existing version 12 32/64bit linux axe wallet to the latest
 axed, do:
@@ -75,8 +75,6 @@ given the optional 'now' argument.
 
 # Dependencies
 
-* axed
-* axe-cli
 * bash version 4
 * nc (netcat)
 * curl
@@ -84,5 +82,4 @@ given the optional 'now' argument.
 * pv
 * python
 * unzip
-
-_Based on Dashman_ https://github.com/moocowmoo/dashman
+* axed, axe-cli - version 1.1.8 or greater to update
