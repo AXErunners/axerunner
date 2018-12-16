@@ -2,7 +2,7 @@
 rpcuser=$RPCUSER
 rpcpassword=$RPCPASS
 rpcallowip=127.0.0.1
-rpcport=9337
+rpcport=9937
 "#----"
 listen=1
 server=1
