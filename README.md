@@ -10,7 +10,7 @@ AXE wallet/daemon management utilities - version 0.1.27
 
 To install axerunner do:
 
-    sudo apt-get install python git unzip pv
+    sudo apt-get install python virtualenv git unzip pv
     cd ~ && git clone https://github.com/charlesrocket/axerunner
 
 To update your existing version 32/64bit linux AXE wallet to the latest
