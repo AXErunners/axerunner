@@ -847,6 +847,13 @@ get_axed_status(){
     AXED_GETINFO=`$AXE_CLI getinfo 2>/dev/null`;
     AXED_DIFFICULTY=$(echo "$AXED_GETINFO" | grep difficulty | awk '{print $2}' | sed -e 's/[",]//g')
 
+    WEB_BLOCK_COUNT_DQA=`$curl_cmd http://axe-explorer.arcpool.com/api/getblockcount`;
+    if [ -z "$WEB_BLOCK_COUNT_DQA" ]; then
+        WEB_BLOCK_COUNT_DQA=0
+    fi
+
+    CHECK_SYNC_AGAINST_HEIGHT=$(echo "$WEB_BLOCK_COUNT_DQA" | tr " " "\n" | sort -rn | head -1)
+
     AXED_SYNCED=0
     if [ $CHECK_SYNC_AGAINST_HEIGHT -ge $AXED_CURRENT_BLOCK ] && [ $(($CHECK_SYNC_AGAINST_HEIGHT - 5)) -lt $AXED_CURRENT_BLOCK ];then
         AXED_SYNCED=1
