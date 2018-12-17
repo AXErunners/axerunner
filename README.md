@@ -83,3 +83,5 @@ given the optional 'now' argument.
 * python
 * unzip
 * axed, axe-cli - version 1.1.8 or greater to update
+
+Based on [Dashman](https://github.com/moocowmoo/dashman) by moocowmoo
