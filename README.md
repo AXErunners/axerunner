@@ -1,12 +1,12 @@
 # AXErunner
 
-AXE wallet/daemon management utilities - version 0.1.27
+**[AXE](https://github.com/AXErunners/axe)** wallet/daemon management utilities - version 0.1.27
 
 * This script installs, updates, and manages single-user axe daemons and wallets
 * It is currently only compatible with 32/64 bit linux.
 * Multi-user (system directory) installs are not supported
 
-# Install/Usage
+## Install/Usage
 
 To install axerunner do:
 
@@ -39,23 +39,23 @@ To get the current status of axed, do:
     axerunner/axerunner status
 
 
-# Commands
+## Commands
 
-## sync
+### sync
 
 "axerunner sync" updates axerunner to the latest version from github
 
-## install
+### install
 
 "axerunner install" downloads and initializes a fresh AXE install into ~/.axecore
 unless already present
 
-## reinstall
+### reinstall
 
 "axerunner reinstall" downloads and overwrites existing AXE executables, even if
 already present
 
-## update
+### update
 
 where it all began, "axerunner update" searches for your axed/axe-cli
 executibles in the current directory, ~/.axecore, and $PATH.  It will prompt
@@ -63,17 +63,17 @@ to install in the first directory found containing both axed and axe-cli.
 Multiple wallet directories are not supported. The script assumes the host runs
 a single instance of axed.
 
-## restart
+### restart
 
 "axerunner restart [now]" restarts (or starts) axed. Searches for axe-cli/axed
 the current directory, ~/.axecore, and $PATH. It will prompt to restart if not
 given the optional 'now' argument.
 
-## status
+### status
 
 "axerunner status" interrogates the locally running axed and displays its status
 
-# Dependencies
+## Dependencies
 
 * bash version 4
 * nc (netcat)
