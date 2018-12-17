@@ -1140,7 +1140,7 @@ install_sentinel() {
     cd sentinel
 
     pending "   --> virtualenv init... "
-    virtualenv venv 2>&1 > /dev/null;
+    virtualenv ./venv 2>&1 > /dev/null;
     if [[ $? -gt 0 ]];then
         err "  --> virtualenv initialization failed"
         pending "  when running: " ; echo
@@ -1150,7 +1150,7 @@ install_sentinel() {
     ok "${messages["done"]}"
 
     pending "   --> pip modules... "
-    venv/bin/pip install -r requirements.txt 2>&1 > /dev/null;
+    ./venv/bin/pip install -r requirements.txt 2>&1 > /dev/null;
     if [[ $? -gt 0 ]];then
         err "  --> pip install failed"
         pending "  when running: " ; echo
