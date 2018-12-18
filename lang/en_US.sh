@@ -119,8 +119,6 @@ messages=(
     ["status_mnstart"]="  masternode started         : "
     ["status_mnvislo"]="  masternode visible (local) : "
     ["status_mnqueue"]="  masternode queue/count     : "
-    ["status_mnlastp"]="  masternode last payment    : "
-    ["status_mnbalan"]="  masternode balance         : "
 
     ["ago"]=" ago"
     ["found"]="found."

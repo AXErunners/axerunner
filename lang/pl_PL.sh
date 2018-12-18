@@ -119,8 +119,6 @@ messages=(
     ["status_mnstart"]="  masternod uruchomiony              : "
     ["status_mnvislo"]="  masternod wiczoczny (lokalny)      : "
     ["status_mnqueue"]="  pozycja w kolejce                  : "
-    ["status_mnlastp"]="  ostatnia otrzymana płatność        : "
-    ["status_mnbalan"]="  saldo masternoda                   : "
 
     # do not translate, leave empty, overrides english sentence usage
     ["ago"]=""
