@@ -961,31 +961,6 @@ awk ' \
             WEB_NINJA_API=$($curl_cmd --ciphers rsa_3des_sha "https://www.axeninja.pl/api/masternodes?ips=\[\"${MASTERNODE_BIND_IP}:9937\"\]&portcheck=1&balance=1")
         fi
 
-        WEB_NINJA_JSON_TEXT=$(echo $WEB_NINJA_API | python -m json.tool)
-        WEB_NINJA_SEES_OPEN=$(echo "$WEB_NINJA_JSON_TEXT" | grep '"Result"' | grep open | wc -l)
-        WEB_NINJA_MN_ADDY=$(echo "$WEB_NINJA_JSON_TEXT" | grep MasternodePubkey | awk '{print $2}' | sed -e 's/[",]//g')
-        WEB_NINJA_MN_VIN=$(echo "$WEB_NINJA_JSON_TEXT" | grep MasternodeOutputHash | awk '{print $2}' | sed -e 's/[",]//g')
-        WEB_NINJA_MN_VIDX=$(echo "$WEB_NINJA_JSON_TEXT" | grep MasternodeOutputIndex | awk '{print $2}' | sed -e 's/[",]//g')
-        WEB_NINJA_MN_BALANCE=$(echo "$WEB_NINJA_JSON_TEXT" | grep Value | awk '{print $2}' | sed -e 's/[",]//g')
-        WEB_NINJA_MN_LAST_PAID_TIME_EPOCH=$(echo "$WEB_NINJA_JSON_TEXT" | grep MNLastPaidTime | awk '{print $2}' | sed -e 's/[",]//g')
-        WEB_NINJA_MN_LAST_PAID_AMOUNT=$(echo "$WEB_NINJA_JSON_TEXT" | grep MNLastPaidAmount | awk '{print $2}' | sed -e 's/[",]//g')
-        WEB_NINJA_MN_LAST_PAID_BLOCK=$(echo "$WEB_NINJA_JSON_TEXT" | grep MNLastPaidBlock | awk '{print $2}' | sed -e 's/[",]//g')
-
-        WEB_NINJA_LAST_PAYMENT_TIME=$(date -d @${WEB_NINJA_MN_LAST_PAID_TIME_EPOCH} '+%m/%d/%Y %H:%M:%S' 2>/dev/null)
-
-        if [ ! -z "$WEB_NINJA_LAST_PAYMENT_TIME" ]; then
-            local daysago=$(dateDiff -d now "$WEB_NINJA_LAST_PAYMENT_TIME")
-            local hoursago=$(dateDiff -h now "$WEB_NINJA_LAST_PAYMENT_TIME")
-            hoursago=$(( hoursago - (24 * daysago) ))
-            WEB_NINJA_LAST_PAYMENT_TIME="$WEB_NINJA_LAST_PAYMENT_TIME ($daysago ${messages["days"]}, $hoursago ${messages["hours"]}${messages["ago"]})"
-
-        fi
-
-        WEB_NINJA_API_OFFLINE=0
-        if [[ $(echo "$WEB_NINJA_API" | grep '"status":"ERROR"' | wc -l) > 0 ]];then
-            WEB_NINJA_API_OFFLINE=1
-        fi
-
     fi
 
 
