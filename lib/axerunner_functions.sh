@@ -954,6 +954,8 @@ awk ' \
 
     fi
 
+    fi
+
 }
 
 date2stamp () {
