@@ -4,8 +4,8 @@
 
 ![axerunner_scrnsht](https://raw.githubusercontent.com/AXErunners/media/master/etc/axerunner-v0127.png)
 
-* This script installs, updates, and manages single-user axe daemons and wallets
-* It is currently only compatible with 32/64 bit linux.
+* This script installs, updates, and manages single-user AXE daemons and wallets
+* It is currently only compatible with 32/64 bit GNU/Linux
 * Multi-user (system directory) installs are not supported
 
 ## Install/Usage
