@@ -1,6 +1,6 @@
 # AXErunner
 
-**[AXE](https://github.com/AXErunners/axe)** wallet/daemon management utilities - version 0.1.27
+**[AXE](https://github.com/AXErunners/axe)** wallet/daemon management utilities
 
 ![axerunner_scrnsht](https://raw.githubusercontent.com/AXErunners/media/master/etc/axerunner-v0127.png)
 
