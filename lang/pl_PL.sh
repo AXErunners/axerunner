@@ -118,6 +118,8 @@ messages=(
     ["status_mncount"]="  liczba masternodów                 : "
     ["status_mnstart"]="  masternod uruchomiony              : "
     ["status_mnvislo"]="  masternod wiczoczny (lokalny)      : "
+    ["status_mnaddre"]="  adres twojego masternoda           : "
+    ["status_mnfundt"]="  ID transakcji fundującej noda      : "
     ["status_mnqueue"]="  pozycja w kolejce                  : "
 
     # do not translate, leave empty, overrides english sentence usage

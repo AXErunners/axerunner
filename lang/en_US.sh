@@ -118,6 +118,8 @@ messages=(
     ["status_mncount"]="  masternode count           : "
     ["status_mnstart"]="  masternode started         : "
     ["status_mnvislo"]="  masternode visible (local) : "
+    ["status_mnaddre"]="  masternode address         : "
+    ["status_mnfundt"]="  masternode funding txn     : "
     ["status_mnqueue"]="  masternode queue/count     : "
 
     ["ago"]=" ago"
