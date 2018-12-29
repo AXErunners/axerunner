@@ -15,8 +15,7 @@ To install axerunner do:
     sudo apt-get install python virtualenv git unzip pv
     cd ~ && git clone https://github.com/axerunners/axerunner
 
-To update your existing version 32/64bit linux AXE wallet to the latest
-axed, do:
+To update your existing version 32/64bit linux wallet to the latest, do:
 
     axerunner/axerunner update
 
