@@ -8,7 +8,7 @@
 * It is currently only compatible with 32/64 bit GNU/Linux
 * Multi-user (system directory) installs are not supported
 
-## Install/Usage
+## Install & Usage
 
 To install axerunner do:
 
