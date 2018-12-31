@@ -44,21 +44,21 @@ To get the current status of axed, do:
 
 ### sync
 
-"axerunner sync" updates axerunner to the latest version from github
+`axerunner` sync updates axerunner to the latest version from github
 
 ### install
 
-"axerunner install" downloads and initializes a fresh AXE install into ~/.axecore
+`axerunner install` downloads and initializes a fresh AXE install into ~/.axecore
 unless already present
 
 ### reinstall
 
-"axerunner reinstall" downloads and overwrites existing AXE executables, even if
+`axerunner reinstall` downloads and overwrites existing AXE executables, even if
 already present
 
 ### update
 
-where it all began, "axerunner update" searches for your axed/axe-cli
+where it all began, `axerunner update` searches for your axed/axe-cli
 executibles in the current directory, ~/.axecore, and $PATH.  It will prompt
 to install in the first directory found containing both axed and axe-cli.
 Multiple wallet directories are not supported. The script assumes the host runs
@@ -66,13 +66,13 @@ a single instance of axed.
 
 ### restart
 
-"axerunner restart [now]" restarts (or starts) axed. Searches for axe-cli/axed
+`axerunner restart now` restarts (or starts) axed. Searches for axe-cli/axed
 the current directory, ~/.axecore, and $PATH. It will prompt to restart if not
 given the optional 'now' argument.
 
 ### status
 
-"axerunner status" interrogates the locally running axed and displays its status
+`axerunner status` interrogates the locally running axed and displays its status
 
 ## Dependencies
 
