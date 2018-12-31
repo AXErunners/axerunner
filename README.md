@@ -44,7 +44,7 @@ To get the current status of axed, do:
 
 ### sync
 
-`axerunner` sync updates axerunner to the latest version from github
+`axerunner sync` updates axerunner to the latest version from github
 
 ### install
 
