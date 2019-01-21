@@ -345,7 +345,8 @@ _check_axed_state() {
     if [ $AXED_HASPID -gt 0 ] && [ $AXED_PID -gt 0 ]; then
         AXED_RUNNING=1
     fi
-    if [ $( $AXE_CLI help 2>/dev/null | wc -l ) -gt 0 ]; then
+    $AXE_CLI getinfo >/dev/null 2>&1
+    if [ $? -eq 0 ] || [ $? -eq 28 ]; then
         AXED_RESPONDING=1
     fi
 }
@@ -375,6 +376,7 @@ restart_axed(){
 
     pending " --> ${messages["waiting_for_axed_to_respond"]}"
     echo -en "${C_YELLOW}"
+    AXED_RESPONDING=0
     while [ $AXED_RUNNING == 1 ] && [ $AXED_RESPONDING == 0 ]; do
         echo -n "."
         _check_axed_state
