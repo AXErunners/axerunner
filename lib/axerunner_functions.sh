@@ -1117,6 +1117,23 @@ print_status() {
         else
     err     "  external api offline         " ;
         fi
+    if [ $MN_REGISTERED -gt 0 ] ; then
+        pending " protx registration hash     : " ; ok "$MN_PROTX_HASH"
+        pending " protx registered service    : " ; [ $MN_PROTX_SERVICE_VALID  -eq 1 ] && ok "$MN_PROTX_SERVICE" || err "$MN_PROTX_SERVICE"
+        pending " protx registered address    : " ; ok "$MN_PROTX_COLL_ADDY"
+        pending " protx registered collateral : " ; ok "$MN_PROTX_COLL_HASH-$MN_PROTX_COLL_IDX"
+        pending " protx registered at block   : " ; ok "$MN_PROTX_REGD_HEIGHT"
+        pending " protx confirmations         : " ; ok "$MN_PROTX_CONFIRMATIONS"
+        pending " protx last paid block       : " ; ok "$MN_PROTX_LAST_PAID_HEIGHT"
+        pending " protx owner address         : " ; ok "$MN_PROTX_OWNER_ADDRESS"
+        pending " protx voter address         : " ; ok "$MN_PROTX_VOTER_ADDRESS"
+        pending " protx payout address        : " ; ok "$MN_PROTX_PAYOUT_ADDRESS"
+        pending " protx operator reward       : " ; ok "$MN_PROTX_OPER_REWARD"
+        pending " protx operator pubkey       : " ; ok "$MN_PROTX_OPER_PUBKEY"
+        pending " protx pose score            : " ; [ $MN_PROTX_POSE_PENALTY  -gt 0 ] && err "$MN_PROTX_POSE_PENALTY" || ok "$MN_PROTX_POSE_PENALTY"
+        #    MN_PROTX_POSE_REVIVED_HEIGHT=$(echo "$MN_PROTX_RECORD" | grep PoSeRevivedHeight | awk '{print $2}')
+        #    MN_PROTX_POSE_BAN_HEIGHT=$(echo "$MN_PROTX_RECORD" | grep PoSeBanHeight | awk '{print $2}')
+    fi
 
     pending "${messages["status_mncount"]}" ; [ $MN_TOTAL            -gt 0 ] && ok "$MN_TOTAL" || err "$MN_TOTAL"
 
