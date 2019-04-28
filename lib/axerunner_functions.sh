@@ -1041,11 +1041,8 @@ awk ' \
             # downgrade connection to support distros with stale nss libraries
             WEB_NINJA_API=$($curl_cmd --ciphers rsa_3des_sha "https://www.axeninja.pl/api/masternodes?ips=\[\"${MASTERNODE_BIND_IP}:9937\"\]&portcheck=1&balance=1")
         fi
-        LOCAL_MN_STATUS=$( $AXE_CLI masternode status | python -mjson.tool )
-        MN_PAYEE=$(echo "$LOCAL_MN_STATUS" | grep '"payee"' | awk '{print $2}' | sed -e 's/[",]//g')
-        MN_FUNDING=$([ ! -z "$MN_PAYEE" ] && echo "$LOCAL_MN_STATUS" | grep '"outpoint"' | awk '{print $2}' | sed -e 's/[",]//g')
-    fi
 
+    fi
 
 }
 
