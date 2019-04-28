@@ -3,9 +3,8 @@
 # axerunner - main executable
 # installs, updates, and manages axe daemons and wallets
 
-# Copyright (c) 2015-2017 moocowmoo - moocowmoo@masternode.me
-# Copyright (c) 2017-2018 AXErunners
-
+# Copyright (c) 2015-2019 moocowmoo - moocowmoo@masternode.me
+# Copyright (c) 2017-2019 AXErunners
 
 # check we're running bash 4 -------------------------------------------------
 
