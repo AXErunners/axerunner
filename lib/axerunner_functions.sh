@@ -1172,7 +1172,6 @@ print_status() {
         #    MN_PROTX_POSE_BAN_HEIGHT=$(echo "$MN_PROTX_RECORD" | grep PoSeBanHeight | awk '{print $2}')
     fi
 
-    else
     pending "${messages["status_mncount"]}" ; [ $MN_TOTAL            -gt 0 ] && ok "$MN_TOTAL" || err "$MN_TOTAL"
     fi
 }
