@@ -1173,7 +1173,6 @@ print_status() {
     fi
 
     pending "${messages["status_mncount"]}" ; [ $MN_TOTAL            -gt 0 ] && ok "$MN_TOTAL" || err "$MN_TOTAL"
-    fi
 }
 
 show_message_configure() {
