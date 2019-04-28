@@ -963,6 +963,41 @@ get_axed_status(){
 
     # masternode (remote!) specific
 
+    MN_PROTX_RAW="$($AXE_CLI protx list valid 1 2>&1)"
+    MN_PROTX_RECORD=`echo "$MN_PROTX_RAW" | grep -w -B6 -A19 $MASTERNODE_BIND_IP:9937 | sed -e 's/:9937/~9937/' -e 's/[":,{}]//g' -e 's/^ \+//' -e 's/ \+$//' -e 's/~9937/:9937/' -e '/^$/d' -e '/^[^ ]\+$/d'`
+    MN_PROTX_QUEUE=`echo "$MN_PROTX_RAW" | egrep '(proTxHash|lastPaidHeight|PoSeRevivedHeight|registeredHeight)' | sed -e 's/[":,{}]//g' -e 's/^ \+//' -e 's/ \+$//' -e '/^$/d' -e '/^[^ ]\+$/d' | sed -e 'N;s/\n/ /' | sed -e 'N;s/\n/ /' | awk ' \
+{
+    if ($8 > $6) {
+        print $8 " " $_
+    }
+    else if ($6 == 0) {
+        print $4 " " $_
+    }
+    else {
+        print $6 " " $_
+    }
+}' | sort -k1,1nr`
+    MN_PROTX_QUEUE_LENGTH=$(echo "$MN_PROTX_QUEUE" | wc -l)
+
+    MN_PROTX_HASH=''
+    MN_PROTX_CONFIRMATIONS=''
+    MN_PROTX_REGD_HEIGHT=''
+    MN_PROTX_LAST_PAID_HEIGHT=''
+    MN_PROTX_COLL_HASH=''
+    MN_PROTX_COLL_IDX=''
+    MN_PROTX_COLL_ADDY=''
+    MN_PROTX_OPER_REWARD=''
+    MN_PROTX_POSE_PENALTY=''
+    MN_PROTX_POSE_REVIVED_HEIGHT=''
+    MN_PROTX_POSE_BAN_HEIGHT=''
+    MN_PROTX_SERVICE=''
+    MN_PROTX_OWNER_ADDRESS=''
+    MN_PROTX_VOTER_ADDRESS=''
+    MN_PROTX_PAYOUT_ADDRESS=''
+    MN_PROTX_OPER_PUBKEY=''
+    MN_PROTX_QUEUE_POSITION=0
+    MN_PROTX_SERVICE_VALID=0
+
     MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $HOME/.axe{,core}/axe.conf | wc -l 2>/dev/null)
     #MN_STARTED=`$AXE_CLI masternode status 2>&1 | grep 'successfully started' | wc -l`
     MN_REGISTERED=0
