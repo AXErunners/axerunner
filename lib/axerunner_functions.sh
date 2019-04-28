@@ -1098,11 +1098,9 @@ print_status() {
     pending "${messages["status_dbllast"]}" ; [ $AXED_SYNCED     -gt 0 ] && ok "$AXED_CURRENT_BLOCK" || err "$AXED_CURRENT_BLOCK"
     pending "${messages["status_dcurdif"]}" ; ok "$AXED_DIFFICULTY"
     if [ $AXED_RUNNING -gt 0 ] && [ $MN_CONF_ENABLED -gt 0 ] ; then
-    pending "${messages["status_mnstart"]}" ; [ $MN_STARTED -gt 0  ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    #pending "${messages["status_mnstart"]}" ; [ $MN_STARTED -gt 0  ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
+    pending "${messages["status_mnregis"]}" ; [ $MN_REGISTERED -gt 0 ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
     pending "${messages["status_mnvislo"]}" ; [ $MN_VISIBLE -gt 0  ] && ok "${messages["YES"]}" || err "${messages["NO"]}"
-    pending "${messages["status_mnaddre"]}" ; ok "$MN_PAYEE"
-    pending "${messages["status_mnfundt"]}" ; ok "$MN_FUNDING"
-    pending "${messages["status_mnqueue"]}" ; [ $MN_QUEUE_IN_SELECTION -gt 0  ] && highlight "$MN_QUEUE_POSITION/$MN_QUEUE_LENGTH (selection pending)" || ok "$MN_QUEUE_POSITION/$MN_QUEUE_LENGTH"
     pending "  masternode mnsync state    : " ; [ ! -z "$MN_SYNC_ASSET" ] && ok "$MN_SYNC_ASSET" || ""
     pending "  masternode network state   : " ; [ "$MN_STATUS" == "ENABLED" ] && ok "$MN_STATUS" || highlight "$MN_STATUS"
 
