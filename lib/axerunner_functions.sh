@@ -130,15 +130,17 @@ usage(){
         restart [now]
 
             ${messages["usage_restart_description"]}
-                banlist.dat
-                budget.dat
                 debug.log
+                banlist.dat
                 fee_estimates.dat
                 governance.dat
+                instantsend.dat
+                mempool.dat
                 mncache.dat
                 mnpayments.dat
                 netfulfilled.dat
                 peers.dat
+                sporks.dat
 
             ${messages["usage_restart_description_now"]}
 
@@ -421,7 +423,19 @@ restart_axed(){
 
     cd $INSTALL_DIR
 
-    rm -f banlist.dat governance.dat netfulfilled.dat budget.dat debug.log fee_estimates.dat mncache.dat mnpayments.dat peers.dat
+    rm -f \
+        debug.log \
+        banlist.dat \
+        fee_estimates.dat \
+        governance.dat \
+        instantsend.dat \
+        mempool.dat \
+        mncache.dat \
+        mnpayments.dat \
+        netfulfilled.dat \
+        peers.dat \
+        sporks.dat
+
     ok "${messages["done"]}"
 
     pending " --> ${messages["starting_axed"]}"
@@ -533,22 +547,24 @@ update_axed(){
 
         pending " --> ${messages["removing_old_version"]}"
         rm -rf \
-            banlist.dat \
-            budget.dat \
             debug.log \
+            banlist.dat \
             fee_estimates.dat \
             governance.dat \
+            instantsend.dat \
+            mempool.dat \
             mncache.dat \
             mnpayments.dat \
             netfulfilled.dat \
             peers.dat \
+            sporks.dat \
             axed \
             axed-$CURRENT_VERSION \
             axe-qt \
             axe-qt-$CURRENT_VERSION \
             axe-cli \
             axe-cli-$CURRENT_VERSION \
-            axecore-${CURRENT_VERSION}.gz*
+            axecore-${CURRENT_VERSION}*.gz*
         ok "${messages["done"]}"
 
         # place it ---------------------------------------------------------------
