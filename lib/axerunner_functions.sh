@@ -37,7 +37,49 @@ else
     AXERUNNER_CHECKOUT=" ("$AXERUNNER_CHECKOUT")"
 fi
 
+[ -z "$CACHE_EXPIRE" ] && CACHE_EXPIRE=5
+[ -z "$ENABLE_CACHE" ] && ENABLE_CACHE=0
+
+CACHE_CMD=''
+[ $ENABLE_CACHE -gt 0 ] && CACHE_CMD='cached_cmd'
+
+CACHE_DIR=/tmp/axerunner_cache
+mkdir -p $CACHE_DIR
+chmod 700 $CACHE_DIR
+
 curl_cmd="timeout 7 curl -k -s -L -A axerunner/$AXERUNNER_VERSION"
+function cached_cmd() {
+    cmd=""
+    whitespace="[[:space:]]"
+    punctuation="&"
+    for i in "$@"; do
+        if [[ $i =~ $whitespace ]];then
+            i=\'$i\'
+        fi
+        if [[ $i =~ $punctuation ]];then
+            i=\'$i\'
+        fi
+        cmd="$cmd $i"
+    done
+
+    FILE_HASH=$(echo $cmd| md5sum | awk '{print $1}')
+    CACHE_FILE=$CACHE_DIR/$FILE_HASH
+    find $CACHE_DIR -type f \( -name '*.cached' -o -name '*.err' -o -name '*.cmd' \) -cmin +$CACHE_EXPIRE -exec rm {} \; >/dev/null 2>&1
+    if [ -e $CACHE_FILE.cached ];then
+        cat $CACHE_FILE.cached
+        return
+    fi
+    echo $cmd > $CACHE_FILE.cmd
+    eval $cmd > $CACHE_FILE.cached 2> $CACHE_FILE.err
+    if [ $? -gt 0 ];then
+        exit $?
+    fi
+    if [ -e $CACHE_FILE.cached ];then
+        cat $CACHE_FILE.cached
+        return
+    fi
+}
+curl_cmd="$CACHE_CMD $curl_cmd"
 wget_cmd='wget --no-check-certificate -q'
 
 
@@ -267,6 +309,8 @@ _find_axe_directory() {
         echo -e "${C_RED}${messages["axecli_not_found"]} $INSTALL_DIR -- ${messages["exiting"]}$C_NORM"
         exit 1
     fi
+
+    AXE_CLI="$CACHE_CMD $INSTALL_DIR/axe-cli"
 
 }
 
