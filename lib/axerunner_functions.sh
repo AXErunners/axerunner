@@ -402,7 +402,7 @@ _check_axed_state() {
     if [ $AXED_HASPID -gt 0 ] && [ $AXED_PID -gt 0 ]; then
         AXED_RUNNING=1
     fi
-    $AXE_CLI getinfo >/dev/null 2>&1
+    $AXE_CLI getblockchaininfo >/dev/null 2>&1
     if [ $? -eq 0 ] || [ $? -eq 28 ]; then
         AXED_RESPONDING=1
     fi
@@ -455,9 +455,9 @@ restart_axed(){
         die "\n - axed unexpectedly quit. ${messages["exiting"]}"
     fi
     ok "${messages["done"]}"
-    pending " --> axe-cli getinfo"
+    pending " --> axe-cli getblockchaininfo"
     echo
-    $AXE_CLI getinfo
+    $AXE_CLI getblockchaininfo
     echo
 
 }
@@ -925,8 +925,8 @@ get_axed_status(){
     AXED_CONNECTIONS=`netstat -nat | grep ESTA | grep 9937 | wc -l`;
     AXED_CURRENT_BLOCK=`$AXE_CLI getblockcount 2>/dev/null`
     if [ -z "$AXED_CURRENT_BLOCK" ] ; then AXED_CURRENT_BLOCK=0 ; fi
-    AXED_GETINFO=`$AXE_CLI getinfo 2>/dev/null`;
-    AXED_DIFFICULTY=$(echo "$AXED_GETINFO" | grep difficulty | awk '{print $2}' | sed -e 's/[",]//g')
+    AXED_GETBLOCKCHAININFO=`$AXE_CLI getblockchaininfo 2>/dev/null`;
+    AXED_DIFFICULTY=$(echo "$AXED_GETBLOCKCHAININFO" | grep difficulty | awk '{print $2}' | sed -e 's/[",]//g')
 
     WEB_BLOCK_COUNT_DQA=`$curl_cmd http://axe-explorer.arcpool.com/api/getblockcount`;
     if [ -z "$WEB_BLOCK_COUNT_DQA" ]; then
