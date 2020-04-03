@@ -313,7 +313,7 @@ def main(screen):
     if axe_cli_path is None:
         # test axe-cli in path -- TODO make robust
         try:
-            run_command('axe-cli getinfo')
+            run_command('axe-cli getblockchaininfo')
         except subprocess.CalledProcessError:
             quit(
                 "--> cannot find axe-cli in $PATH\n" +
