@@ -431,7 +431,7 @@ def main(screen):
             for line in lines:
                 n, v = line.split('=')
                 conf[n.strip(' ')] = v.strip(' ')
-            if all(k in conf for k in ('masternode', 'externalip', 'masternodeprivkey')):
+            if all(k in conf for k in ('externalip', 'masternodeblsprivkey')):
                 # get funding tx from axeninja
                 import urllib2
                 mninfo = urllib2.urlopen(
@@ -447,7 +447,7 @@ def main(screen):
                 vidx = str(d[u'MasternodeOutputIndex'])
                 masternodes[vin + '-' + vidx] = {
                     "alias": conf['externalip'],
-                    "mnprivkey": conf['masternodeprivkey'],
+                    "mnprivkey": conf['masternodeblsprivkey'],
                     "fundtx": vin +
                     '-' +
                     vidx,
