@@ -1,3 +1,7 @@
+0.1.31 -  Tue Jul 28 11:00:00 2020 +0000
+
+    config - drop deprecated parameters
+
 0.1.28 -  Wed Apr 3 13:00:24 2019 +0000
 
     enh - use protx registration for masternode status
