@@ -209,7 +209,7 @@ _check_dependencies() {
     (which perl 2>&1) >/dev/null || MISSING_DEPENDENCIES="${MISSING_DEPENDENCIES}perl "
     (which git  2>&1) >/dev/null || MISSING_DEPENDENCIES="${MISSING_DEPENDENCIES}git "
 
-    MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $HOME/.axe{,core}/axe.conf | wc -l 2>/dev/null)
+    MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternodeblsprivkey\s*=' $HOME/.axe{,core}/axe.conf | wc -l 2>/dev/null)
     if [ $MN_CONF_ENABLED -gt 0 ] ; then
         (which unzip 2>&1) >/dev/null || MISSING_DEPENDENCIES="${MISSING_DEPENDENCIES}unzip "
         (which virtualenv 2>&1) >/dev/null || MISSING_DEPENDENCIES="${MISSING_DEPENDENCIES}python-virtualenv "
@@ -621,7 +621,7 @@ update_axed(){
 
         # poll it ----------------------------------------------------------------
 
-        MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $INSTALL_DIR/axe.conf | wc -l 2>/dev/null)
+        MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternodeblsprivkey\s*=' $INSTALL_DIR/axe.conf | wc -l 2>/dev/null)
         if [ $MN_CONF_ENABLED -gt 0 ] ; then
 
             # populate it --------------------------------------------------------
@@ -998,7 +998,7 @@ get_axed_status(){
     MN_PROTX_QUEUE_POSITION=0
     MN_PROTX_SERVICE_VALID=0
 
-    MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternode\s*=\s*1' $HOME/.axe{,core}/axe.conf | wc -l 2>/dev/null)
+    MN_CONF_ENABLED=$( egrep -s '^[^#]*\s*masternodeblsprivkey\s*=' $HOME/.axe{,core}/axe.conf | wc -l 2>/dev/null)
     #MN_STARTED=`$AXE_CLI masternode status 2>&1 | grep 'successfully started' | wc -l`
     MN_REGISTERED=0
     [[ -z "$MN_PROTX_RECORD" ]] || MN_REGISTERED=1
