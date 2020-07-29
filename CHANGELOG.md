@@ -1,3 +1,7 @@
+0.1.32 -  Tue Jul 28 19:54:07 2020 +0000
+
+    lib - fix MN_CONF_ENABLED
+
 0.1.31 -  Tue Jul 28 11:00:00 2020 +0000
 
     config - drop deprecated parameters
