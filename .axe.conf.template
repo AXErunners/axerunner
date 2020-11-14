@@ -8,7 +8,7 @@ listen=1
 server=1
 daemon=1
 logtimestamps=1
-maxconnections=64
+maxconnections=128
 "externalip=${IPADDR}"
 "#----"
 "#masternodeblsprivkey=<replace_with_bls_secret>"
