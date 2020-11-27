@@ -588,13 +588,13 @@ update_axed(){
 
         # purge it ---------------------------------------------------------------
 
-        rm -rf axecore-1.2.3*
-        rm -rf axecore-1.2.2*
-        rm -rf axecore-1.2.1*
-        rm -rf axecore-1.2.0*
-        rm -rf axecore-1.1.8*
-        rm -rf axecore-1.1.8*
-        rm -rf axecore-1.1.7*
+        rm -rf axecore-1.6.0*
+        rm -rf axecore-1.5*
+        rm -rf axecore-1.4*
+        rm -rf axecore-1.3*
+        rm -rf axecore-1.2*
+        rm -rf axecore-1.1*
+        rm -rf axecore-1.0*
         rm -rf $TARDIR
 
         # punch it ---------------------------------------------------------------
@@ -823,7 +823,8 @@ install_axed(){
     fi
 
     # purge it ---------------------------------------------------------------
-
+    
+    rm -rf axecore-1.6.0*
     rm -rf axecore-1.5*
     rm -rf axecore-1.4*
     rm -rf axecore-1.3*
