@@ -1,8 +1,9 @@
 # AXErunner
-
-**[AXE](https://github.com/AXErunners/axe)** wallet/daemon management utilities
+[![Version tag](https://img.shields.io/github/tag/axerunners/axerunner.svg)](https://github.com/axerunners/axerunner/tags)
 
 ![axerunner_scrnsht](https://raw.githubusercontent.com/AXErunners/media/master/etc/axerunner-v0127.png)
+
+**[AXE](https://github.com/AXErunners/axe)** wallet/daemon management utilities
 
 * This script installs, updates, and manages single-user AXE daemons and wallets
 * It is currently only compatible with 32/64 bit GNU/Linux
